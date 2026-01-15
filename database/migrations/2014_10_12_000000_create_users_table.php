@@ -20,6 +20,7 @@ class CreateUsersTable extends Migration
             $table->string('nama');
             $table->string('password');
             $table->string('kontak');
+            $table->integer('views')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

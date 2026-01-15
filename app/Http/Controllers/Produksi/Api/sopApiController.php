@@ -54,6 +54,9 @@ class sopApiController extends Controller
     {
         try{
             $sop_Produksi_file = tb_sop_produksi::findOrFail($id);
+            $sop_Produksi_file->update([
+                'views' => $sop_Produksi_file->views + 1,
+            ]);
             return response()->json([
                 'success' => true,
                 'message' => 'showing data SOP Produksi',

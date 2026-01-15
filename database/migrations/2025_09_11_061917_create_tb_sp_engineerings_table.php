@@ -22,6 +22,7 @@ class CreateTbSpEngineeringsTable extends Migration
             $table->string('edisi');
             $table->string('revisi');
             $table->string('tanggal_efektif');
+            $table->integer('views')->nullable();
         });
     }
 

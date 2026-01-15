@@ -22,6 +22,7 @@
           <th>NRP</th>
           <th>Nama</th>
           <th>Kontak</th>
+          <th>Role</th>
           <th>Action</th>
         </tr>
       </thead>
@@ -33,6 +34,14 @@
           <td>{{$item->nrp}}</td>
           <td>{{$item->nama}}</td>
           <td>{{$item->kontak}}</td>
+          <td>
+            @if($item->role==0)
+              DOCO
+            @elseif($item->role==1)
+              Group Leader
+            @else
+              Tidak Diketahui
+            @endif
           <td>
             @if(Auth::user()->role==0)
             <a href="{{ route('auth.edit', $item->id) }}"class="btn btn-sm btn-secondary">Edit</a>

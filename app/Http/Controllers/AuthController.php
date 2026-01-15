@@ -29,7 +29,7 @@ class AuthController extends Controller
     {
         $input = $request->all();
         User::create([   
-            'role' => 0,
+            'role' => $request->role,
             'nama' => $request->nama,
             'kontak' => $request->kontak,
             'nrp' => $request->nrp,
@@ -63,7 +63,7 @@ class AuthController extends Controller
         $input = $request->all();
         $anggota = User::find($id);
         $anggota->update([
-            'role' => 0,
+            'role' => $request->role,
             'nama' => $request->nama,
             'kontak' => $request->kontak,
             'nrp' => $request->nrp,

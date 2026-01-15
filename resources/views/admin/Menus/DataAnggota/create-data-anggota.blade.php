@@ -20,7 +20,13 @@
                     <label class="form-label">Kontak</label>
                     <input type="text" class="form-control" name="kontak"/>
                 </div>
-                
+                <div class="mb-3">
+                    <label class="form-label">Role</label>
+                    <select class="form-select" name="role">
+                        <option value="0">DOCO</option>
+                        <option value="1">Group Leader</option>
+                    </select>
+                </div>
                 <div class="mb-3">
                     <label class="form-label">Password</label>
                     <input type="text" class="form-control" name="password"/>

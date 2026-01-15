@@ -1,0 +1,68 @@
+@extends ('layouts.main')
+@section('container')
+<!-- Content -->
+
+<div class="card">
+  <div class="card-header d-flex justify-content-between align-items-center">
+    <h5 class="card-header">Tabel Data Poster</h5>
+    @if(Auth::user()->role==0)
+      <a href="{{route('dataPoster.create')}}" type="button" class="btn btn-primary" >
+      Tambah Poster Baru
+    </a>
+    @elseif(Auth::user()->role==1)
+    @else
+      Jenis Akun Tidak Memiliki Akses.
+    @endif
+  </div>
+  <div class="table-responsive text-nowrap">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>No</th>
+          <th>No Poster</th>
+          <th>Judul</th>
+          <th>File</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody class="table-border-bottom-0">
+        <?php $index = 1; ?>
+      @foreach ($posters as $item)
+        <tr>
+            <td> <strong>{{$index++}}</strong></td>
+            <td>{{$item->no_dokumen}}</td>
+            <td>{{$item->judul}}</td>
+            <td>
+                @if($item->file)
+                  <img
+                    src="{{ asset('storage/poster/'.$item->file) }}"
+                    class="img-fluid"
+                    alt="Layout fluid"
+                    style="max-width: 300px; max-height: 500px; object-fit: contain;"
+                  />
+                @else
+                    <span class="text-muted">Tidak ada file</span>
+                @endif
+            </td>
+            <td>
+            @if(Auth::user()->role==0)
+            <a href="{{ route('dataPoster.edit', $item->id) }}"class="btn btn-sm btn-secondary">Edit</a>
+            <form onsubmit="return confirm('Apakah Anda Yakin ?');"
+                action="{{ route('dataPoster.destroy', $item->id) }}" method="POST">
+                @csrf
+                @method('DELETE')
+                <button type="submit" class="btn btn-sm btn-danger">Hapus</button>
+            </form>
+            @elseif(Auth::user()->role==1)
+                No Access.
+            @else
+                Jenis Akun Tidak Memiliki Akses.
+            @endif
+          </td>
+        </tr>
+      @endforeach
+      </tbody>
+    </table>
+  </div>
+</div>
+@endsection

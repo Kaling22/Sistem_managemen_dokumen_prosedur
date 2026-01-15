@@ -21,7 +21,13 @@
                 <label class="form-label">Kontak</label>
                 <input type="text" class="form-control" name="kontak" value="{{$anggota->kontak}}"/>
             </div>
-            
+            <div class="mb-3">
+                <label class="form-label">Role</label>
+                <select class="form-select" name="role">
+                    <option value="0" {{ $anggota->role == 0 ? 'selected' : '' }}>DOCO</option>
+                    <option value="1" {{ $anggota->role == 1 ? 'selected' : '' }}>Group Leader</option>
+                </select>
+            </div>
             
             <div class="mb-3">
                 <label class="form-label">Password</label>
