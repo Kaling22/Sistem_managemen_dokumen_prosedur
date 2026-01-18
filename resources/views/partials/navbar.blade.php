@@ -34,15 +34,10 @@ id="layout-navbar"
                 </div>
                 </div>
                 <div class="flex-grow-1">
-                <span class="fw-semibold d-block"> {{Auth::user()->nama}}</span>
+                    
+                <span class="fw-semibold d-block">{{ Auth::user()->nama }}</span>
                 <small class="text-muted">
-                    @if(Auth::user()->role==0)
-                    Role <span class="fw-bold">Admin</span>.
-                    @elseif(Auth::user()->role==1)
-                    Role <span class="fw-bold">Anggota</span>.
-                    @else
-                    Jenis Akun Tidak Memiliki Akses.
-                    @endif
+                    Role <span class="fw-bold">{{ Auth::user()->role_name }}</span>
                 </small>
                 </div>
             </div>

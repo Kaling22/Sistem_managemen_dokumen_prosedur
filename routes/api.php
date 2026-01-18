@@ -8,9 +8,10 @@ use App\Http\Controllers\Produksi\Api\sopApiController;
 use App\Http\Controllers\Produksi\Api\jsaApiController;
 use App\Http\Controllers\Produksi\Api\ikApiController;
 use App\Http\Controllers\Produksi\Api\spApiController;
-use App\Http\Controllers\Produksi\Api\pxProduksiApiController;
-use App\Http\Controllers\Produksi\Api\fkProduksiApiController;
-use App\Http\Controllers\Produksi\Api\linkProduksiApiController;
+use App\Http\Controllers\Produksi\Api\pxApiProduksiController;
+use App\Http\Controllers\Produksi\Api\fkApiProduksiController;
+use App\Http\Controllers\Produksi\Api\linkproduksiApiController;
+use App\Http\Controllers\Produksi\Api\reportApiController;
 
 //HCGA
 use App\Http\Controllers\HCGA\Api\sopHcgaApiController;
@@ -26,15 +27,15 @@ use App\Http\Controllers\COE\Api\jsaCoeApiController;
 use App\Http\Controllers\COE\Api\ikCoeApiController;
 use App\Http\Controllers\COE\Api\spCoeApiController;
 use App\Http\Controllers\COE\Api\pxApiCoeController;
-use App\Http\Controllers\COE\Api\fkCoeApiController;
+use App\Http\Controllers\COE\Api\fkApiCoeController;
 
 //PLANT
 use App\Http\Controllers\Plant\Api\sopPlantApiController;
 use App\Http\Controllers\Plant\Api\jsaPlantApiController;
 use App\Http\Controllers\Plant\Api\ikPlantApiController;
 use App\Http\Controllers\Plant\Api\spPlantApiController;
-use App\Http\Controllers\Plant\Api\pxPlantApiController;
-use App\Http\Controllers\Plant\Api\fkPlantApiController;
+use App\Http\Controllers\Plant\Api\pxApiPlantController;
+use App\Http\Controllers\Plant\Api\fkApiPlantController;
 
 //FALOG
 use App\Http\Controllers\Falog\Api\sopFalogApiController;
@@ -49,8 +50,8 @@ use App\Http\Controllers\SHE\Api\sopSheApiController;
 use App\Http\Controllers\SHE\Api\jsaSheApiController;
 use App\Http\Controllers\SHE\Api\ikSheApiController;
 use App\Http\Controllers\SHE\Api\spSheApiController;
-use App\Http\Controllers\SHE\Api\pxSheApiController;
-use App\Http\Controllers\SHE\Api\fkSheApiController;
+use App\Http\Controllers\SHE\Api\pxApiSheController;
+use App\Http\Controllers\SHE\Api\fkApiSheController;
 
 //ENGINEERING
 use App\Http\Controllers\Engineering\Api\sopEngineeringApiController;
@@ -73,6 +74,7 @@ use App\Http\Controllers\INFORMASI\Api\mocmprpApiController;
 use App\Http\Controllers\INFORMASI\Api\ibprApiController;
 //AUTH
 use App\Http\Controllers\Api\AuthApiController;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -89,6 +91,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', [AuthApiController::class, 'user']);
     Route::post('/logout', [AuthApiController::class, 'logout']);
 });
+
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
@@ -97,9 +100,10 @@ Route::apiResource('sopProduksi', sopApiController::class);
 Route::apiResource('jsaProduksi', jsaApiController::class);
 Route::apiResource('ikProduksi', ikApiController::class);
 Route::apiResource('spProduksi', spApiController::class);
-Route::apiResource('pxProduksi', pxProduksiApiController::class);
-Route::apiResource('fkProduksi', fkProduksiApiController::class);
-Route::apiResource('linkProduksi', linkProduksiApiController::class);
+Route::apiResource('pxProduksi', pxApiProduksiController::class);
+Route::apiResource('fkProduksi', fkApiProduksiController::class);
+Route::apiResource('linkProduksi', linkproduksiApiController::class);
+Route::apiResource('reportProduksi', reportApiController::class);
 
 //COE
 Route::apiResource('sopCoe', sopCoeApiController::class);
@@ -114,16 +118,16 @@ Route::apiResource('sopPlant', sopPlantApiController::class);
 Route::apiResource('jsaPlant', jsaPlantApiController::class);
 Route::apiResource('ikPlant', ikPlantApiController::class);
 Route::apiResource('spPlant', spPlantApiController::class);
-Route::apiResource('pxPlant', pxPlantApiController::class);
-Route::apiResource('fkPlant', fkPlantApiController::class);
+Route::apiResource('pxPlant', pxApiPlantController::class);
+Route::apiResource('fkPlant', fkApiPlantController::class);
 
 //SHE
 Route::apiResource('sopShe', sopSheApiController::class);
 Route::apiResource('jsaShe', jsaSheApiController::class);
 Route::apiResource('ikShe', ikSheApiController::class);
 Route::apiResource('spShe', spSheApiController::class);
-Route::apiResource('pxShe', pxSheApiController::class);
-Route::apiResource('fkShe', fkSheApiController::class);
+Route::apiResource('pxShe', pxApiSheController::class);
+Route::apiResource('fkShe', fkApiSheController::class);
 
 //HCGA
 Route::apiResource('sopHcga', sopHcgaApiController::class);
@@ -140,6 +144,8 @@ Route::apiResource('ikEngineering', ikEngineeringApiController::class);
 Route::apiResource('spEngineering', spEngineeringApiController::class);
 Route::apiResource('pxEngineering', pxApiEngineeringController::class);
 Route::apiResource('fkEngineering', fkApiEngineeringController::class);
+
+
 
 //FALOG
 Route::apiResource('sopFalog', sopFalogApiController::class);

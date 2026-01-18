@@ -33,6 +33,7 @@ class AuthApiController extends Controller
                 'id' => $user->id,
                 'nama' => $user->nama,
                 'nrp' => $user->nrp,
+                'departemen' => $user->departemen,
                 'role' => $user->role,
             ]
         ]);

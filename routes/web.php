@@ -1,162 +1,113 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\DashboardAdminController;
 use App\Http\Controllers\AuthController;
-//PRODUKSI
-use App\Http\Controllers\Produksi\sopController;
-use App\Http\Controllers\Produksi\spController;
-use App\Http\Controllers\Produksi\ikController;
-use App\Http\Controllers\Produksi\jsaController;
-use App\Http\Controllers\Produksi\pxProduksiController;
-use App\Http\Controllers\Produksi\fkProduksiController;
-use App\Http\Controllers\Produksi\linkproduksiController;
-//SHE
-use App\Http\Controllers\SHE\sopSheController;
-use App\Http\Controllers\SHE\spSheController;
-use App\Http\Controllers\SHE\ikSheController;
-use App\Http\Controllers\SHE\jsaSheController;
-use App\Http\Controllers\SHE\pxSheController;
-use App\Http\Controllers\SHE\fkSheController;
-//PLANT
-use App\Http\Controllers\Plant\sopPlantController;
-use App\Http\Controllers\Plant\spPlantController;
-use App\Http\Controllers\Plant\ikPlantController;
-use App\Http\Controllers\Plant\jsaPlantController;
-use App\Http\Controllers\Plant\pxPlantController;
-use App\Http\Controllers\Plant\fkPlantController;
-//FALOG
-use App\Http\Controllers\Falog\sopFalogController;
-use App\Http\Controllers\Falog\spFalogController;
-use App\Http\Controllers\Falog\ikFalogController;
-use App\Http\Controllers\Falog\jsaFalogController;
-use App\Http\Controllers\Falog\pxFalogController;
-use App\Http\Controllers\Falog\fkFalogController;
-//HCGA
-use App\Http\Controllers\HCGA\sopHcgaController;
-use App\Http\Controllers\HCGA\spHcgaController;
-use App\Http\Controllers\HCGA\ikHcgaController;
-use App\Http\Controllers\HCGA\jsaHcgaController;
-use App\Http\Controllers\HCGA\pxHcgaController;
-use App\Http\Controllers\HCGA\fkHcgaController;
-//COE
-use App\Http\Controllers\COE\sopCoeController;
-use App\Http\Controllers\COE\spCoeController;
-use App\Http\Controllers\COE\ikCoeController;
-use App\Http\Controllers\COE\jsaCoeController;
-use App\Http\Controllers\COE\pxCoeController;
-use App\Http\Controllers\COE\fkCoeController;
-//ENGINEERING
-use App\Http\Controllers\Engineering\sopEngineeringController;
-use App\Http\Controllers\Engineering\spEngineeringController;
-use App\Http\Controllers\Engineering\ikEngineeringController;
-use App\Http\Controllers\Engineering\jsaEngineeringController;
-use App\Http\Controllers\Engineering\pxEngineeringController;
-use App\Http\Controllers\Engineering\fkEngineeringController;
-
-//Informasi
-use App\Http\Controllers\INFORMASI\kebijakanController;
-use App\Http\Controllers\INFORMASI\posterController;
-use App\Http\Controllers\INFORMASI\memoController;
-use App\Http\Controllers\INFORMASI\memoInternalController;
-use App\Http\Controllers\INFORMASI\instruksiKttController;
-use App\Http\Controllers\INFORMASI\msdsController;
-use App\Http\Controllers\INFORMASI\bapController;
-use App\Http\Controllers\INFORMASI\sertifikatSIOController;
-use App\Http\Controllers\INFORMASI\mocmprpController;
-use App\Http\Controllers\INFORMASI\ibprController;
+use App\Http\Controllers\DashboardAdminController;
 
 /*
 |--------------------------------------------------------------------------
-| Web Routes
+| AUTH & LOGIN
 |--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
+*/
+Route::get('/', [AuthController::class, 'home'])->name('home');
+Route::post('/login', [AuthController::class, 'authenticate']);
+Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth');
+
+/*
+|--------------------------------------------------------------------------
+| DASHBOARD (SEMUA USER LOGIN)
+|--------------------------------------------------------------------------
+*/
+Route::get('/dashboard', [DashboardAdminController::class, 'index'])
+    ->middleware('auth')
+    ->name('dashboard');
+
+/*
+|--------------------------------------------------------------------------
+| ADMIN ONLY (ROLE = 0)
+|--------------------------------------------------------------------------
 */
 
-Route::middleware(['auth', '0'])->group(function () {
+Route::middleware(['auth', 'admin'])->group(function () {
     Route::resource('auth', AuthController::class);
-    
-    //PRODUKSI
-    Route::resource('dataSopProduksi', sopController::class)->middleware('auth');
-    Route::resource('dataSpProduksi', spController::class)->middleware('auth');
-    Route::resource('dataIkProduksi', ikController::class)->middleware('auth');
-    Route::resource('dataJsaProduksi', jsaController::class)->middleware('auth');
-    Route::resource('dataPxProduksi', pxProduksiController::class)->middleware('auth');
-    Route::resource('dataFkProduksi', fkProduksiController::class)->middleware('auth');
-    Route::resource('dataLinkProduksi', linkProduksiController::class)->middleware('auth');
-    
-
-    //SHE
-    Route::resource('dataSopShe', sopSheController::class)->middleware('auth');
-    Route::resource('dataSpShe', spSheController::class)->middleware('auth');
-    Route::resource('dataIkShe', ikSheController::class)->middleware('auth');
-    Route::resource('dataJsaShe', jsaSheController::class)->middleware('auth');
-    Route::resource('dataPxShe', pxSheController::class)->middleware('auth');
-    Route::resource('dataFkShe', fkSheController::class)->middleware('auth');
-
-    //PLANT
-    Route::resource('dataSopPlant', sopPlantController::class)->middleware('auth');
-    Route::resource('dataSpPlant', spPlantController::class)->middleware('auth');
-    Route::resource('dataIkPlant', ikPlantController::class)->middleware('auth');
-    Route::resource('dataJsaPlant', jsaPlantController::class)->middleware('auth');
-    Route::resource('dataPxPlant', pxPlantController::class)->middleware('auth');
-    Route::resource('dataFkPlant', fkPlantController::class)->middleware('auth');
-
-    //FALOG
-    Route::resource('dataSopFalog', sopFalogController::class)->middleware('auth');
-    Route::resource('dataSpFalog', spFalogController::class)->middleware('auth');
-    Route::resource('dataIkFalog', ikFalogController::class)->middleware('auth');
-    Route::resource('dataJsaFalog', jsaFalogController::class)->middleware('auth');
-    Route::resource('dataPxFalog', pxFalogController::class)->middleware('auth');
-    Route::resource('dataFkFalog', fkFalogController::class)->middleware('auth');
-
-    //HCGA
-    Route::resource('dataSopHcga', sopHcgaController::class)->middleware('auth');
-    Route::resource('dataSpHcga', spHcgaController::class)->middleware('auth');
-    Route::resource('dataIkHcga', ikHcgaController::class)->middleware('auth');
-    Route::resource('dataJsaHcga', jsaHcgaController::class)->middleware('auth');
-    Route::resource('dataPxHcga', pxHcgaController::class)->middleware('auth');
-    Route::resource('dataFkHcga', fkHcgaController::class)->middleware('auth');
-
-    //COE
-    Route::resource('dataSopCoe', sopCoeController::class)->middleware('auth');
-    Route::resource('dataSpCoe', spCoeController::class)->middleware('auth');
-    Route::resource('dataIkCoe', ikCoeController::class)->middleware('auth');
-    Route::resource('dataJsaCoe', jsaCoeController::class)->middleware('auth');
-    Route::resource('dataPxCoe', pxCoeController::class)->middleware('auth');
-    Route::resource('dataFkCoe', fkCoeController::class)->middleware('auth');
-
-    //ENGINEERING
-    Route::resource('dataSopEngineering', sopEngineeringController::class)->middleware('auth');
-    Route::resource('dataSpEngineering', spEngineeringController::class)->middleware('auth');
-    Route::resource('dataIkEngineering', ikEngineeringController::class)->middleware('auth');
-    Route::resource('dataJsaEngineering', jsaEngineeringController::class)->middleware('auth');
-    Route::resource('dataPxEngineering', pxEngineeringController::class)->middleware('auth');
-    Route::resource('dataFkEngineering', fkEngineeringController::class)->middleware('auth');
-
-    //Informasi
-    Route::resource('dataKebijakan', kebijakanController::class)->middleware('auth');
-    Route::resource('dataPoster', posterController::class)->middleware('auth');
-    Route::resource('dataMemo', memoController::class)->middleware('auth');
-    Route::resource('dataMemoInternal', memoInternalController::class)->middleware('auth');
-    Route::resource('dataMsds', msdsController::class)->middleware('auth');
-    Route::resource('dataInstruksiKtt', instruksiKttController::class)->middleware('auth');
-    Route::resource('dataBap', bapController::class)->middleware('auth');
-    Route::resource('dataSertifikatSIO', sertifikatSIOController::class)->middleware('auth');
-    Route::resource('dataMocMprp', mocmprpController::class)->middleware('auth');
-    Route::resource('dataIbpr', ibprController::class)->middleware('auth');
-
 });
 
+Route::middleware(['auth', 'department:PRODUKSI'])->group(function () {
+    Route::resource('dataSopProduksi', App\Http\Controllers\Produksi\sopController::class);
+    Route::resource('dataSpProduksi', App\Http\Controllers\Produksi\spController::class);
+    Route::resource('dataIkProduksi', App\Http\Controllers\Produksi\ikController::class);
+    Route::resource('dataJsaProduksi', App\Http\Controllers\Produksi\jsaController::class);
+    Route::resource('dataPxProduksi', App\Http\Controllers\Produksi\pxProduksiController::class);
+    Route::resource('dataFkProduksi', App\Http\Controllers\Produksi\fkProduksiController::class);
+    Route::resource('dataLinkProduksi', App\Http\Controllers\Produksi\linkproduksiController::class);
+    Route::resource('dataReportProduksi', App\Http\Controllers\Produksi\reportController::class);
+});
 
-Route::resource('dashboardAdmin', DashboardAdminController::class)->middleware('auth');
-Route::resource('auth', AuthController::class);
-Route::get('/', [AuthController::class, 'Home'])->name('Home');
-Route::post('/login', [AuthController::class, 'authenticate']);
-Route::post('/logout', [AuthController::class, 'logout']);
-Route::get('/auth', 'App\Http\Controllers\AuthController@index')->name('auth.index')->middleware('auth');
-Route::get('/dashboard', [DashboardAdminController::class,'index'])->middleware('auth');
+Route::middleware(['auth', 'department:SHE'])->group(function () {
+    Route::resource('dataSopShe', App\Http\Controllers\SHE\sopSheController::class);
+    Route::resource('dataSpShe', App\Http\Controllers\SHE\spSheController::class);
+    Route::resource('dataIkShe', App\Http\Controllers\SHE\ikSheController::class);
+    Route::resource('dataJsaShe', App\Http\Controllers\SHE\jsaSheController::class);
+    Route::resource('dataPxShe', App\Http\Controllers\SHE\pxSheController::class);
+    Route::resource('dataFkShe', App\Http\Controllers\SHE\fkSheController::class);
+});
+
+Route::middleware(['auth', 'department:COE'])->group(function () {
+    Route::resource('dataSopCoe', App\Http\Controllers\COE\sopCoeController::class);
+    Route::resource('dataSpCoe', App\Http\Controllers\COE\spCoeController::class);
+    Route::resource('dataIkCoe', App\Http\Controllers\COE\ikCoeController::class);
+    Route::resource('dataJsaCoe', App\Http\Controllers\COE\jsaCoeController::class);
+    Route::resource('dataPxCoe', App\Http\Controllers\COE\pxCoeController::class);
+    Route::resource('dataFkCoe', App\Http\Controllers\COE\fkCoeController::class);
+});
+
+Route::middleware(['auth', 'department:FALOG'])->group(function () {
+    Route::resource('dataSopFalog', App\Http\Controllers\Falog\sopFalogController::class);
+    Route::resource('dataSpFalog', App\Http\Controllers\Falog\spFalogController::class);
+    Route::resource('dataIkFalog', App\Http\Controllers\Falog\ikFalogController::class);
+    Route::resource('dataJsaFalog', App\Http\Controllers\Falog\jsaFalogController::class);
+    Route::resource('dataPxFalog', App\Http\Controllers\Falog\pxFalogController::class);
+    Route::resource('dataFkFalog', App\Http\Controllers\Falog\fkFalogController::class);
+});
+
+Route::middleware(['auth', 'department:HCGA'])->group(function () {
+    Route::resource('dataSopHcga', App\Http\Controllers\HCGA\sopHcgaController::class);
+    Route::resource('dataSpHcga', App\Http\Controllers\HCGA\spHcgaController::class);
+    Route::resource('dataIkHcga', App\Http\Controllers\HCGA\ikHcgaController::class);
+    Route::resource('dataJsaHcga', App\Http\Controllers\HCGA\jsaHcgaController::class);
+    Route::resource('dataPxHcga', App\Http\Controllers\HCGA\pxHcgaController::class);
+    Route::resource('dataFkHcga', App\Http\Controllers\HCGA\fkHcgaController::class);
+});
+
+Route::middleware(['auth', 'department:PLANT'])->group(function () {
+    Route::resource('dataSopPlant', App\Http\Controllers\Plant\sopPlantController::class);
+    Route::resource('dataSpPlant', App\Http\Controllers\Plant\spPlantController::class);
+    Route::resource('dataIkPlant', App\Http\Controllers\Plant\ikPlantController::class);
+    Route::resource('dataJsaPlant', App\Http\Controllers\Plant\jsaPlantController::class);
+    Route::resource('dataPxPlant', App\Http\Controllers\Plant\pxPlantController::class);
+    Route::resource('dataFkPlant', App\Http\Controllers\Plant\fkPlantController::class);
+});
+
+Route::middleware(['auth', 'department:ENGINEERING'])->group(function () {
+     Route::resource('dataSopEngineering', App\Http\Controllers\Engineering\sopEngineeringController::class);
+    Route::resource('dataSpEngineering', App\Http\Controllers\Engineering\spEngineeringController::class);
+    Route::resource('dataIkEngineering', App\Http\Controllers\Engineering\ikEngineeringController::class);
+    Route::resource('dataJsaEngineering', App\Http\Controllers\Engineering\jsaEngineeringController::class);
+    Route::resource('dataPxEngineering', App\Http\Controllers\Engineering\pxEngineeringController::class);
+    Route::resource('dataFkEngineering', App\Http\Controllers\Engineering\fkEngineeringController::class);
+});
+
+Route::middleware(['auth'])->group(function () {
+
+    Route::resource('dataKebijakan', App\Http\Controllers\INFORMASI\kebijakanController::class);
+    Route::resource('dataPoster', App\Http\Controllers\INFORMASI\PosterController::class);
+    Route::resource('dataMemo', App\Http\Controllers\INFORMASI\MemoController::class);
+    Route::resource('dataMemoInternal', App\Http\Controllers\INFORMASI\memoInternalController::class);
+    Route::resource('dataMsds', App\Http\Controllers\INFORMASI\msdsController::class);
+    Route::resource('dataInstruksiKtt', App\Http\Controllers\INFORMASI\instruksiKTTController::class);
+    Route::resource('dataBap', App\Http\Controllers\INFORMASI\bapController::class);
+    Route::resource('dataSertifikatSIO', App\Http\Controllers\INFORMASI\sertifikatSIOController::class);
+    Route::resource('dataMocMprp', App\Http\Controllers\INFORMASI\mocmprpController::class);
+    Route::resource('dataIbpr', App\Http\Controllers\INFORMASI\ibprController::class);
+
+});

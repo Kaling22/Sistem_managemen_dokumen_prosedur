@@ -27,16 +27,26 @@ class AuthController extends Controller
      */
     public function store(Request $request)
     {
-        $input = $request->all();
-        User::create([   
-            'role' => $request->role,
-            'nama' => $request->nama,
-            'kontak' => $request->kontak,
-            'nrp' => $request->nrp,
-            'password' => bcrypt($input['password']),
+        $validated = $request->validate([
+            'nama' => 'required|string',
+            'nrp' => 'required|string|unique:users,nrp',
+            'departemen' => 'required|string',
+            'kontak' => 'nullable|string',
+            'role' => 'required|in:0,1,2,3,4,5,6',
+            'password' => 'required|min:6',
         ]);
-
-        return redirect()->route('auth.index');
+    
+        User::create([
+            'nama' => $validated['nama'],
+            'nrp' => $validated['nrp'],
+            'departemen' => $validated['departemen'],
+            'kontak' => $validated['kontak'],
+            'role' => $validated['role'],
+            'password' => bcrypt($validated['password']),
+        ]);
+    
+        return redirect()->route('auth.index')
+            ->with('success', 'Akun berhasil dibuat');
     }
 
     /**
@@ -60,23 +70,33 @@ class AuthController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $input = $request->all();
-        $anggota = User::find($id);
-        $anggota->update([
-            'role' => $request->role,
-            'nama' => $request->nama,
-            'kontak' => $request->kontak,
-            'nrp' => $request->nrp,
-            'password' => bcrypt($input['password']),
+        $anggota = User::findOrFail($id);
+    
+        $validated = $request->validate([
+            'nama' => 'required|string',
+            'nrp' => 'required|string|unique:users,nrp,' . $id,
+            'departemen' => 'required|string',
+            'kontak' => 'nullable|string',
+            'role' => 'required|in:0,1,2,3,4,5,6',
+            'password' => 'nullable|min:6',
         ]);
-        return redirect()->route('auth.index');
-    }
-
-    public function destroy(string $id)
-    {
-        $anggota = User::find($id);
-        $anggota -> delete();
-        return redirect()->route('auth.index');
+    
+        $data = [
+            'nama' => $validated['nama'],
+            'nrp' => $validated['nrp'],
+            'departemen' => $validated['departemen'],
+            'kontak' => $validated['kontak'],
+            'role' => $validated['role'],
+        ];
+    
+        if (!empty($validated['password'])) {
+            $data['password'] = bcrypt($validated['password']);
+        }
+    
+        $anggota->update($data);
+    
+        return redirect()->route('auth.index')
+            ->with('success', 'Akun berhasil diperbarui');
     }
 
 

@@ -14,7 +14,7 @@
       content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"
     />
 
-    <title>ProWork PT.PPA ADW</title>
+    <title>SmartPro PT.PPA ADW</title>
 
     <meta name="description" content="" />
 
@@ -100,7 +100,13 @@
     
     <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
     
-    
+    <style>
+        .bg-pink {
+            background-color: #e83e8c !important;
+            color: #fff;
+        }
+    </style>
+
     
   </body>
 </html>
