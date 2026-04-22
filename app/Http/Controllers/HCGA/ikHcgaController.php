@@ -8,6 +8,11 @@ use App\Models\HCGA\tb_ik_hcga;
 use Illuminate\Support\Facades\Storage;
 class ikHcgaController extends Controller
 {
+    public function indexInactive()
+    {
+        $ikTidakAktif = tb_ik_hcga::where('status_doc', 'Inactive')->get();
+        return view ('admin.Menus.DataHCGA.IK.data-ik-tidak-aktif',compact('ikTidakAktif'));
+    }
     /**
      * Display a listing of the resource.
      *
@@ -19,54 +24,6 @@ class ikHcgaController extends Controller
         return view ('admin.Menus.DataHCGA.IK.data-ik',compact('ik'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        return view ('admin.Menus.DataHCGA.IK.create-ik');
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        // validasi format file
-        $this->validate($request, [
-            'file_ik' => 'required|mimes:pdf|max:20480',
-        ]);
-
-        $file = $request->file('file_ik');
-        $file->storeAs('public/ik', $file->hashName());
-        tb_ik_hcga::create([
-            'no_dokumen' => $request->no_dokumen,
-            'judul_ik' => $request->judul_ik,
-            'file_ik' => $file->hashName(),
-            'edisi' => $request->edisi,
-            'revisi' => $request->revisi,
-            'tanggal_efektif' => $request->tanggal_efektif,
-        ]);
-
-
-        return redirect()->route('dataIkHcga.index');
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
 
     /**
      * Show the form for editing the specified resource.
@@ -76,37 +33,8 @@ class ikHcgaController extends Controller
      */
     public function edit($id)
     {
-        $ik = tb_ik_hcga::find($id);
-        return view('admin.Menus.DataHCGA.IK.edit-ik',compact('ik'));
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        $ik = tb_ik_hcga::find($id);
-        $this->validate($request, [
-            'file_ik' => 'required|mimes:pdf',
-        ]);
-        Storage::delete('public/ik/'.$ik->file_ik);
-        $file = $request->file('file_ik');
-        $file->storeAs('public/ik', $file->hashName());
-
-        $ik->update([
-            'no_dokumen' => $request->no_dokumen,
-            'judul_ik' => $request->judul_ik,
-            'file_ik' => $file->hashName(),
-            'edisi' => $request->edisi,
-            'revisi' => $request->revisi,
-            'tanggal_efektif' => $request->tanggal_efektif,
-        ]);
-        $ik->save();
-        return redirect()->route('dataIkHcga.index');
+        $ikRevisi = tb_ik_hcga::findOrFail($id);
+        return view('admin.Menus.DokumenRevisi.IK.revisi-ik', compact('ikRevisi'));
     }
 
     /**

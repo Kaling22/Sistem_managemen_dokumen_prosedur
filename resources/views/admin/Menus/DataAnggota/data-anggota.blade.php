@@ -1,19 +1,18 @@
 @extends ('layouts.main')
-@section('container')
-<!-- Content -->
 
+@section('container')
 <div class="card">
+
   <div class="card-header d-flex justify-content-between align-items-center">
     <h5 class="card-header">Tabel Data Anggota</h5>
-    @if(Auth::user()->role==0)
-      <a href="{{ route('auth.create') }}" type="button" class="btn btn-primary" >
-      Tambah Anggota Baru
-    </a>
-    @elseif(Auth::user()->role==1)
-    @else
-      Jenis Akun Tidak Memiliki Akses.
+
+    @if(Auth::user()->role === \App\Models\User::ROLE_ADMIN || Auth::user()->role === \App\Models\User::ROLE_DOCO)
+      <a href="{{ route('auth.create') }}" class="btn btn-primary">
+        Tambah Anggota Baru
+      </a>
     @endif
   </div>
+
   <div class="table-responsive text-nowrap">
     <table class="table">
       <thead>
@@ -23,44 +22,47 @@
           <th>Nama</th>
           <th>Kontak</th>
           <th>Role</th>
-          <th>Action</th>
+          <th class="text-center">Action</th>
         </tr>
       </thead>
+
       <tbody class="table-border-bottom-0">
-        <?php $index = 1; ?>
-      @foreach ($anggota as $item)
+        @foreach ($anggota as $index => $item)
         <tr>
-          <td> <strong>{{$index++}}</strong></td>
-          <td>{{$item->nrp}}</td>
-          <td>{{$item->nama}}</td>
-          <td>{{$item->kontak}}</td>
-          <td>
-            @if($item->role==0)
-              DOCO
-            @elseif($item->role==1)
-              Group Leader
+          <td><strong>{{ $index + 1 }}</strong></td>
+          <td>{{ $item->nrp }}</td>
+          <td>{{ $item->nama }}</td>
+          <td>{{ $item->kontak }}</td>
+          <td>{{ $item->role_name }}</td>
+
+          <td class="text-center">
+            @if(Auth::user()->role === \App\Models\User::ROLE_ADMIN || Auth::user()->role === \App\Models\User::ROLE_DOCO)
+
+              <a href="{{ route('auth.edit', $item->id) }}"
+                 class="btn btn-sm btn-secondary">
+                Edit
+              </a>
+
+              <form action="{{ route('auth.destroy', $item->id) }}"
+                    method="POST"
+                    class="d-inline"
+                    onsubmit="return confirm('Apakah Anda yakin?');">
+                @csrf
+                @method('DELETE')
+                <button type="submit" class="btn btn-sm btn-danger">
+                  Hapus
+                </button>
+              </form>
+
             @else
-              Tidak Diketahui
+              <span class="badge bg-secondary">No Access</span>
             @endif
-          <td>
-            @if(Auth::user()->role==0)
-            <a href="{{ route('auth.edit', $item->id) }}"class="btn btn-sm btn-secondary">Edit</a>
-            <form onsubmit="return confirm('Apakah Anda Yakin ?');"
-              action="{{ route('auth.destroy', $item->id) }}" method="POST">
-              @csrf
-              @method('DELETE')
-              <button type="submit" class="btn btn-sm btn-danger">Hapus</button>
-            </form>
-          @elseif(Auth::user()->role==1)
-            No Access.
-          @else
-            Jenis Akun Tidak Memiliki Akses.
-          @endif
           </td>
         </tr>
-      @endforeach
+        @endforeach
       </tbody>
     </table>
   </div>
+
 </div>
 @endsection

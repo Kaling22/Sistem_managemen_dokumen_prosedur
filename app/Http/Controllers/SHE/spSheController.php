@@ -8,6 +8,14 @@ use App\Models\SHE\tb_sp_she;
 use Illuminate\Support\Facades\Storage;
 class spSheController extends Controller
 {
+    public function indexInactive()
+    {
+        $spTidakAktif = tb_sp_she::where('status_doc', 'Inactive')->get();
+        return view ('admin.Menus.DataSHE.SP.data-sp-tidak-aktif',compact('spTidakAktif'));
+    }
+
+    
+
     /**
      * Display a listing of the resource.
      *
@@ -15,7 +23,7 @@ class spSheController extends Controller
      */
     public function index()
     {
-        $sp = tb_sp_she::all();
+        $sp = tb_sp_she::where('status_doc', 'Active')->get();
         return view ('admin.Menus.DataSHE.SP.data-sp',compact('sp'));
     }
 
@@ -26,7 +34,6 @@ class spSheController extends Controller
      */
     public function create()
     {
-        return view ('admin.Menus.DataSHE.SP.create-sp');
     }
 
     /**
@@ -37,24 +44,6 @@ class spSheController extends Controller
      */
     public function store(Request $request)
     {
-        // validasi format file
-        $this->validate($request, [
-            'file_sp' => 'required|mimes:pdf|max:20480',
-        ]);
-
-        $file = $request->file('file_sp');
-        $file->storeAs('public/sp', $file->hashName());
-        tb_sp_she::create([
-            'no_dokumen' => $request->no_dokumen,
-            'judul_sp' => $request->judul_sp,
-            'file_sp' => $file->hashName(),
-            'edisi' => $request->edisi,
-            'revisi' => $request->revisi,
-            'tanggal_efektif' => $request->tanggal_efektif,
-        ]);
-
-
-        return redirect()->route('dataSpShe.index');
     }
 
     /**
@@ -76,37 +65,8 @@ class spSheController extends Controller
      */
     public function edit($id)
     {
-        $sp = tb_sp_she::find($id);
-        return view('admin.Menus.DataSHE.SP.edit-sp',compact('sp'));
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        $sp = tb_sp_she::find($id);
-        $this->validate($request, [
-            'file_sp' => 'required|mimes:pdf',
-        ]);
-        Storage::delete('public/sp/'.$sp->file_sp);
-        $file = $request->file('file_sp');
-        $file->storeAs('public/sp', $file->hashName());
-
-        $sp->update([
-            'no_dokumen' => $request->no_dokumen,
-            'judul_sp' => $request->judul_sp,
-            'file_sp' => $file->hashName(),
-            'edisi' => $request->edisi,
-            'revisi' => $request->revisi,
-            'tanggal_efektif' => $request->tanggal_efektif,
-        ]);
-        $sp->save();
-        return redirect()->route('dataSpShe.index');
+        $spRevisi = tb_sp_she::findOrFail($id);
+        return view('admin.Menus.DokumenRevisi.SP.revisi-sp', compact('spRevisi'));
     }
 
     /**
@@ -120,6 +80,6 @@ class spSheController extends Controller
         $delete = tb_sp_she::find($id);
         Storage::delete('public/sp/'.$delete->file_sp);
         $delete->delete();
-        return redirect()->route('dataSpShe.index');
+        return redirect()->route('dataSpSHE.index');
     }
 }

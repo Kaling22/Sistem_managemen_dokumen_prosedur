@@ -12,7 +12,7 @@ class DepartmentAccess
         $user = auth()->user();
 
         // Admin selalu boleh
-        if ($user->role == 0) {
+        if ($user->role == 0 || $user->role == 1) {
             return $next($request);
         }
 

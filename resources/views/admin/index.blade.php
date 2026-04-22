@@ -12,9 +12,9 @@
                 @if(Auth::user()->role==0)
                   Anda telah melakukan login sebagai <span class="fw-bold">Admin</span>.
                 @elseif(Auth::user()->role==1)
-                  Anda telah melakukan login sebagai <span class="fw-bold">Anggota</span>.
+                  Anda telah melakukan login sebagai <span class="fw-bold">DOCO</span>.
                 @else
-                  Jenis Akun Tidak Memiliki Akses.
+                  Anda telah melakukan login sebagai <span class="fw-bold">Anggota</span>.
                 @endif
                 </p>
               </div>

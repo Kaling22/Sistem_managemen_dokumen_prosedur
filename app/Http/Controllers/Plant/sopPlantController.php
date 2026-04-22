@@ -15,8 +15,14 @@ class sopPlantController extends Controller
      */
     public function index()
     {
-        $sop = tb_sop_plant::all();
+        $sop = tb_sop_plant::where('status_doc', 'active')->get();
         return view ('admin.Menus.DataPlant.SOP.data-sop',compact('sop'));
+    }
+
+    public function indexInactive()
+    {
+        $sopTidakAktif = tb_sop_plant::where('status_doc', 'Inactive')->get();
+        return view ('admin.Menus.DataPlant.SOP.data-sop-tidak-aktif',compact('sopTidakAktif'));
     }
 
     /**
@@ -26,7 +32,7 @@ class sopPlantController extends Controller
      */
     public function create()
     {
-        return view ('admin.Menus.DataPlant.SOP.create-sop');
+        //
     }
 
     /**
@@ -37,24 +43,7 @@ class sopPlantController extends Controller
      */
     public function store(Request $request)
     {
-        // validasi format file
-        $this->validate($request, [
-            'file_sop' => 'required|mimes:pdf|max:20480',
-        ]);
-
-        $file = $request->file('file_sop');
-        $file->storeAs('public/sop', $file->hashName());
-        tb_sop_plant::create([
-            'no_dokumen' => $request->no_dokumen,
-            'judul_sop' => $request->judul_sop,
-            'file_sop' => $file->hashName(),
-            'edisi' => $request->edisi,
-            'revisi' => $request->revisi,
-            'tanggal_efektif' => $request->tanggal_efektif,
-        ]);
-
-
-        return redirect()->route('dataSopPlant.index');
+        
     }
 
     /**
@@ -76,8 +65,8 @@ class sopPlantController extends Controller
      */
     public function edit($id)
     {
-        $sop = tb_sop_plant::find($id);
-        return view('admin.Menus.DataPlant.SOP.edit-sop',compact('sop'));
+        $sopRevisi = tb_sop_plant::findOrFail($id);
+        return view('admin.Menus.DokumenRevisi.SOP.revisi-sop', compact('sopRevisi'));
     }
 
     /**
@@ -89,24 +78,7 @@ class sopPlantController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $sop = tb_sop_plant::find($id);
-        $this->validate($request, [
-            'file_sop' => 'required|mimes:pdf',
-        ]);
-        Storage::delete('public/sop/'.$sop->file_sop);
-        $file = $request->file('file_sop');
-        $file->storeAs('public/sop', $file->hashName());
         
-        $sop->update([
-            'no_dokumen' => $request->no_dokumen,
-            'judul_sop' => $request->judul_sop,
-            'file_sop' => $file->hashName(),
-            'edisi' => $request->edisi,
-            'revisi' => $request->revisi,
-            'tanggal_efektif' => $request->tanggal_efektif,
-        ]);
-        $sop->save();
-        return redirect()->route('dataSopPlant.index');
     }
 
     /**

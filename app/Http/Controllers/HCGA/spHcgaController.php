@@ -8,6 +8,12 @@ use App\Models\HCGA\tb_sp_hcga;
 use Illuminate\Support\Facades\Storage;
 class spHcgaController extends Controller
 {
+    public function indexInactive()
+    {
+        $spTidakAktif = tb_sp_hcga::where('status_doc', 'Inactive')->get();
+        return view ('admin.Menus.DataHCGA.SP.data-sp-tidak-aktif',compact('spTidakAktif'));
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -15,7 +21,7 @@ class spHcgaController extends Controller
      */
     public function index()
     {
-        $sp = tb_sp_hcga::all();
+        $sp = tb_sp_hcga::where('status_doc', 'Active')->get();
         return view ('admin.Menus.DataHCGA.SP.data-sp',compact('sp'));
     }
 
@@ -26,7 +32,6 @@ class spHcgaController extends Controller
      */
     public function create()
     {
-        return view ('admin.Menus.DataHCGA.SP.create-sp');
     }
 
     /**
@@ -37,24 +42,6 @@ class spHcgaController extends Controller
      */
     public function store(Request $request)
     {
-        // validasi format file
-        $this->validate($request, [
-            'file_sp' => 'required|mimes:pdf|max:20480',
-        ]);
-
-        $file = $request->file('file_sp');
-        $file->storeAs('public/sp', $file->hashName());
-        tb_sp_hcga::create([
-            'no_dokumen' => $request->no_dokumen,
-            'judul_sp' => $request->judul_sp,
-            'file_sp' => $file->hashName(),
-            'edisi' => $request->edisi,
-            'revisi' => $request->revisi,
-            'tanggal_efektif' => $request->tanggal_efektif,
-        ]);
-
-
-        return redirect()->route('dataSpHcga.index');
     }
 
     /**
@@ -76,37 +63,8 @@ class spHcgaController extends Controller
      */
     public function edit($id)
     {
-        $sp = tb_sp_hcga::find($id);
-        return view('admin.Menus.DataHCGA.SP.edit-sp',compact('sp'));
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        $sp = tb_sp_hcga::find($id);
-        $this->validate($request, [
-            'file_sp' => 'required|mimes:pdf',
-        ]);
-        Storage::delete('public/sp/'.$sp->file_sp);
-        $file = $request->file('file_sp');
-        $file->storeAs('public/sp', $file->hashName());
-
-        $sp->update([
-            'no_dokumen' => $request->no_dokumen,
-            'judul_sp' => $request->judul_sp,
-            'file_sp' => $file->hashName(),
-            'edisi' => $request->edisi,
-            'revisi' => $request->revisi,
-            'tanggal_efektif' => $request->tanggal_efektif,
-        ]);
-        $sp->save();
-        return redirect()->route('dataSpHcga.index');
+        $spRevisi = tb_sp_hcga::findOrFail($id);
+        return view('admin.Menus.DokumenRevisi.SP.revisi-sp', compact('spRevisi'));
     }
 
     /**

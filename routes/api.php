@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
+use App\Http\Controllers\Api\reportApiController;
 //PRODUKSI
 use App\Http\Controllers\Produksi\Api\sopApiController;
 use App\Http\Controllers\Produksi\Api\jsaApiController;
@@ -11,7 +12,6 @@ use App\Http\Controllers\Produksi\Api\spApiController;
 use App\Http\Controllers\Produksi\Api\pxApiProduksiController;
 use App\Http\Controllers\Produksi\Api\fkApiProduksiController;
 use App\Http\Controllers\Produksi\Api\linkproduksiApiController;
-use App\Http\Controllers\Produksi\Api\reportApiController;
 
 //HCGA
 use App\Http\Controllers\HCGA\Api\sopHcgaApiController;
@@ -95,6 +95,8 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+Route::apiResource('report', reportApiController::class);
+
 //PRODUKSI
 Route::apiResource('sopProduksi', sopApiController::class);
 Route::apiResource('jsaProduksi', jsaApiController::class);
@@ -103,7 +105,6 @@ Route::apiResource('spProduksi', spApiController::class);
 Route::apiResource('pxProduksi', pxApiProduksiController::class);
 Route::apiResource('fkProduksi', fkApiProduksiController::class);
 Route::apiResource('linkProduksi', linkproduksiApiController::class);
-Route::apiResource('reportProduksi', reportApiController::class);
 
 //COE
 Route::apiResource('sopCoe', sopCoeApiController::class);

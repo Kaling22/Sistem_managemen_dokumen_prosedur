@@ -17,12 +17,26 @@ class CreateTbIkHcgasTable extends Migration
             $table->id();
             $table->timestamps();
             $table->string('no_dokumen');
-            $table->string('judul_ik');
-            $table->string('file_ik');
+            $table->string('judul');
+            $table->string('file')->nullable();
+            $table->string('jenis_doc');
+            $table->string('departemen');
+            $table->string('pembuat');
+            $table->string('DHdanSH')->nullable();
+            $table->string('DHdanSHApprove')->nullable();
+            $table->string('DHdanSHFeedback')->nullable();
+            $table->string('status_doc');
+            $table->date('pembuat_date')->nullable();
+            $table->date('dhsh_date')->nullable();
+            $table->longText('aktifitas_tanggung_jawab')->nullable();
             $table->string('edisi');
             $table->string('revisi');
-            $table->string('tanggal_efektif');
+            $table->date('efektif_date')->nullable();
             $table->integer('views')->nullable();
+            $table->string('people')->nullable();
+            $table->string('people_approve')->nullable();
+            $table->date('people_date')->nullable();
+            $table->string('catatan')->nullable();
         });
     }
 

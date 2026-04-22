@@ -16,7 +16,11 @@ id="layout-navbar"
     <ul class="navbar-nav flex-row align-items-center ms-auto">
     <!-- Place this tag where you want the button to render. -->
     
-
+    <li class="nav-item me-2 me-xl-0">
+        <a class="nav-link style-switcher-toggle" href="javascript:void(0);" id="darkModeToggle">
+            <i class="bx bx-sm bx-moon" id="darkModeIcon"></i>
+        </a>
+    </li>
     <!-- User -->
     <li class="nav-item navbar-dropdown dropdown-user dropdown">
         <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
@@ -64,3 +68,36 @@ id="layout-navbar"
 </div>
 </nav>
 <div class="container-xxl flex-grow-1 container-p-y">
+
+<script>
+    const darkModeToggle = document.getElementById('darkModeToggle');
+    const darkModeIcon = document.getElementById('darkModeIcon');
+    const htmlElement = document.documentElement; // Mengambil tag <html>
+
+    // 1. Cek local storage saat halaman dimuat
+    const currentTheme = localStorage.getItem('theme') ? localStorage.getItem('theme') : null;
+
+    if (currentTheme) {
+        htmlElement.setAttribute('data-theme', currentTheme);
+        if (currentTheme === 'dark') {
+            darkModeIcon.classList.replace('bx-moon', 'bx-sun');
+        }
+    }
+
+    // 2. Fungsi saat tombol diklik
+    darkModeToggle.addEventListener('click', function() {
+        let theme = htmlElement.getAttribute('data-theme');
+        
+        if (theme === 'dark') {
+            // Ubah ke Light Mode
+            htmlElement.setAttribute('data-theme', 'light');
+            darkModeIcon.classList.replace('bx-sun', 'bx-moon');
+            localStorage.setItem('theme', 'light');
+        } else {
+            // Ubah ke Dark Mode
+            htmlElement.setAttribute('data-theme', 'dark');
+            darkModeIcon.classList.replace('bx-moon', 'bx-sun');
+            localStorage.setItem('theme', 'dark');
+        }
+    });
+</script>
