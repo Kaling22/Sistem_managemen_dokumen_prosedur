@@ -14,9 +14,12 @@ class tb_sp_revisi extends Controller
 {
     public function checkPendingRevision($no_dokumen)
     {
-        // Cari apakah ada no_dokumen yang sama di tabel revisi
-        // Kita cek status yang bukan 'Active' (karena Active berarti sudah selesai/pindah ke master)
-        $pending = sp_revisi::where('no_dokumen', $no_dokumen)->first();
+        // Cari apakah ada no_dokumen yang sama di tabel revisi yang MASIH dalam proses.
+        // Status 'Rejected' (dan 'Active') tidak boleh memblokir pengajuan revisi baru,
+        // jika tidak, satu kali penolakan akan mengunci dokumen selamanya.
+        $pending = sp_revisi::where('no_dokumen', $no_dokumen)
+                    ->whereNotIn('status_doc', ['Rejected', 'Active'])
+                    ->first();
 
         if ($pending) {
             return response()->json([
@@ -96,7 +99,7 @@ class tb_sp_revisi extends Controller
             'lampiran'      => json_encode($lampiranData),
             'DHdanSH'       => $request->DHdanSH,
             'revisi'        => (intval($request->revisi) >= 5) ? 0 : intval($request->revisi) + 1,
-            'edisi'         => (intval($request->revisi) >= 5) ? intval($request->edisi ?? 0) + 1 : ($request->edisi ?? 0),
+            'edisi'         => (intval($request->revisi) >= 5) ? intval($request->edisi ?? 1) + 1 : ($request->edisi ?? 1),
             'efektif_date'  => $request->efektif_date ?? null,
             'people'        => $peopleFinalValue, 
             'catatan'       => $request->catatan ?? null,

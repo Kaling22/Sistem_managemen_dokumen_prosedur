@@ -9,4 +9,5 @@ class sop_revisi extends Model
 {
     use HasFactory;
     protected $guarded = [];
+    
 }

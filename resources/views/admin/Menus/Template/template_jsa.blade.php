@@ -30,6 +30,16 @@
 </head>
 <body>
 
+    @php
+        // Gambar stempel "Approved" untuk kotak pengesahan
+        $appPath = public_path('assets/img/Approved.png');
+        $appBase64 = null;
+        if (file_exists($appPath)) {
+            $appData = file_get_contents($appPath);
+            $appBase64 = 'data:image/' . pathinfo($appPath, PATHINFO_EXTENSION) . ';base64,' . base64_encode($appData);
+        }
+    @endphp
+
     <table>
         <tr>
             <td class="logo-cell">
@@ -71,7 +81,25 @@
         <tr>
             <td class="label-cell">Tanggal Pembuatan</td>
             <td class="value-cell">: {{ ($jsa->tgl_pembuatan) }}</td>
-            <td rowspan="4" class="approval-box"></td> <td rowspan="4" class="approval-box"></td> <td rowspan="4" class="approval-box"></td> </tr>
+            {{-- Dibuat Oleh: stempel tampil setelah dokumen dibuat --}}
+            <td rowspan="4" class="approval-box" style="text-align: center;">
+                @if($appBase64)
+                    <img src="{{ $appBase64 }}" style="width: 70px; height: auto;">
+                @endif
+            </td>
+            {{-- Direview Oleh: stempel tampil jika reviewer approve --}}
+            <td rowspan="4" class="approval-box" style="text-align: center;">
+                @if($jsa->direview_oleh_approve == 'approved' && $appBase64)
+                    <img src="{{ $appBase64 }}" style="width: 70px; height: auto;">
+                @endif
+            </td>
+            {{-- Disetujui Oleh: stempel tampil jika DH/SH approve --}}
+            <td rowspan="4" class="approval-box" style="text-align: center;">
+                @if($jsa->disetujui_oleh_approve == 'approved' && $appBase64)
+                    <img src="{{ $appBase64 }}" style="width: 70px; height: auto;">
+                @endif
+            </td>
+        </tr>
         <tr>
             <td class="label-cell">Nama Pekerjaan</td>
             <td class="value-cell">: {{ $jsa->nama_pekerjaan }}</td>
@@ -94,8 +122,8 @@
         <tr class="name-row">
             <td class="label-cell">Peralatan yang digunakan</td>
             <td class="value-cell">: {{ $jsa->peralatan_pendukung }}</td>
-            <td>Jabatan : {{ $jabatanPembuat }}</td>
-            <td>Jabatan : {{ $jabatanReviewer }}</td>
+            <td>Jabatan : Group Leader</td>
+            <td>Jabatan : Group Leader</td>
             <td>Jabatan : {{ $jabatanPenyetuju }}</td>
         </tr>
     </table>

@@ -50,11 +50,11 @@
             
             {{-- Kolom Approval DH/SH --}}
             <td>
-              @if($item->status == 'Rejected' && $item->DHdanSHApprove == 'rejected')
+              @if($item->status_doc == 'Rejected' && $item->DHdanSHApprove == 'rejected')
                   <span class="badge bg-danger">Rejected</span>
               @elseif($item->DHdanSHApprove == 'approved')
                   <span class="badge bg-success">Approved</span>
-              @elseif(in_array(Auth::user()->role, [3,4]) && Auth::user()->nama == $item->DHdanSH && $item->status != 'Rejected')
+              @elseif(in_array(Auth::user()->role, [3,4]) && Auth::user()->nama == $item->DHdanSH && $item->status_doc != 'Rejected')
                   <button type="button" onclick="openApprovalModal({{ $item->id }})" class="btn btn-warning btn-sm">
                       Need to Approve
                   </button>
@@ -79,6 +79,11 @@
 
             <td>
               <div class="d-flex gap-1">
+                @if($item->status_doc == 'Rejected' && (Auth::user()->nama == $item->pembuat || in_array(Auth::user()->role, [0,1])))
+                    <a href="{{ route('dataSpBaru.edit', $item->id) }}" class="btn btn-sm btn-warning">
+                        <i class="bx bx-edit"></i> Revisi
+                    </a>
+                @endif
                 @if(in_array(Auth::user()->role, [0,1]))
                 <form onsubmit="return confirm('Apakah Anda Yakin ?');"
                     action="{{ route('dataSpBaru.destroy', $item->id) }}" method="POST">

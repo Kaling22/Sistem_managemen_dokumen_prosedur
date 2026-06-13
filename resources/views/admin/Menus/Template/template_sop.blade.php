@@ -172,12 +172,13 @@
                 <td rowspan="3" class="text-center" style="font-size: 12px;">
                     <strong>{{ strtoupper($judul) }}</strong>
                 </td>
-                <td>Edisi: {{ $edisi ?? '0' }}</td>
+                <td>Edisi: {{ $edisi ?? '1' }}</td>
             </tr>
             <tr>
                 <td>Tgl. Terbit: {{ (!empty($efektif_date) && $efektif_date != '0000-00-00') ? date('d/m/Y', strtotime($efektif_date)) : '-' }}</td>
             </tr>
             <tr>
+                <!-- tanggal revisi kosong ketika awal pembuatan dokumen -->
                 <td>Tgl. Revisi: {{ (!empty($pjo_date) && $pjo_date != '-') ? date('d/m/Y', strtotime($pjo_date)) : '-' }}</td>
             </tr>
         </table>
@@ -196,51 +197,45 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($history_notes as $note)
-                            @if(!empty(trim($note['catatan'])))
-                                @php
-                                    // 1. Tentukan sub-notes (apakah ada pemisah HAL atau tidak)
-                                    $hasHal = str_contains($note['catatan'], '[HAL:');
-                                    $subNotes = $hasHal ? array_filter(explode('[END]', $note['catatan'])) : [$note['catatan']];
-                                    $rowCount = count($subNotes);
-                                    $isFirstRow = true;
-                                @endphp
+    @foreach($history_notes as $note)
+        @if(!empty(trim($note['catatan'])))
+            @php
+                $hasHal = str_contains($note['catatan'], '[HAL:');
+                $subNotes = $hasHal ? array_filter(explode('[END]', $note['catatan'])) : [$note['catatan']];
+            @endphp
 
-                                @foreach($subNotes as $sub)
-                                    @if(!empty(trim($sub)))
-                                        @php
-                                            // 2. Ekstrak data jika menggunakan format [HAL:...]
-                                            if ($hasHal) {
-                                                preg_match('/\[HAL:(.*?)\](.*)/s', $sub, $matches);
-                                                $hal = $matches[1] ?? '-';
-                                                $isi = $matches[2] ?? $sub;
-                                            } else {
-                                                $hal = '-';
-                                                $isi = $sub;
-                                            }
-                                        @endphp
-                                        <tr>
-                                            {{-- Kolom Versi/Tanggal hanya muncul di baris pertama dengan ROWSPAN --}}
-                                            @if($isFirstRow)
-                                                <td rowspan="{{ $rowCount }}" style="padding: 8px; vertical-align: top; background-color: #fff;">
-                                                    <strong>{{ $note['versi'] }}</strong><br>
-                                                    <small>{{ $note['tanggal'] }}</small>
-                                                </td>
-                                                @php $isFirstRow = false; @endphp
-                                            @endif
-
-                                            <td style="padding: 8px; vertical-align: top;" class="text-center">
-                                                {{ $hal }}
-                                            </td>
-                                            <td style="padding: 8px; vertical-align: top;">
-                                                {!! nl2br(e(trim($isi))) !!}
-                                            </td>
-                                        </tr>
-                                    @endif
-                                @endforeach
+            @foreach($subNotes as $sub)
+                @if(!empty(trim($sub)))
+                    @php
+                        if ($hasHal) {
+                            preg_match('/\[HAL:(.*?)\](.*)/s', $sub, $matches);
+                            $hal = $matches[1] ?? '-';
+                            $isi = $matches[2] ?? $sub;
+                        } else {
+                            $hal = '-';
+                            $isi = $sub;
+                        }
+                    @endphp
+                    <tr>
+                        {{-- Hapus ROWSPAN, biarkan berulang atau kosongkan jika baris > 1 --}}
+                        <td style="padding: 8px; vertical-align: top;">
+                            @if($loop->first)
+                                <strong>{{ $note['versi'] }}</strong><br>
+                                <small>{{ $note['tanggal'] }}</small>
                             @endif
-                        @endforeach
-                    </tbody>
+                        </td>
+                        <td style="padding: 8px; vertical-align: top;" class="text-center">
+                            {{ $hal }}
+                        </td>
+                        <td style="padding: 8px; vertical-align: top;">
+                            {!! nl2br(e(trim($isi))) !!}
+                        </td>
+                    </tr>
+                @endif
+            @endforeach
+        @endif
+    @endforeach
+</tbody>
                 </table>
             </div>
             <div class="page-break"></div>

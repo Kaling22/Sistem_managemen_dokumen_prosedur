@@ -13,6 +13,105 @@ use Illuminate\Support\Facades\DB;
 
 class tb_sp_baru extends Controller
 {
+
+
+    /**
+     * Menampilkan halaman edit/revisi
+     */
+    public function edit($id)
+    {
+        $data = sp_baru::findOrFail($id);
+        
+        // Proteksi: Hanya pembuat atau admin yang bisa edit
+        if (Auth::user()->nama != $data->pembuat && !in_array(Auth::user()->role, [0, 1])) {
+            return redirect()->route('dataSpBaru.index')->with('error', 'Anda tidak memiliki hak akses untuk mengedit dokumen ini.');
+        }
+
+        return view('admin.Menus.DokumenBaru.SP.edit-spBaru', compact('data'));
+    }
+
+    /**
+     * Memproses update revisi
+     */
+    public function update(Request $request, $id)
+{
+    $request->validate([
+        'no_dokumen' => 'required',
+        'judul' => 'required',
+        'jenis_doc' => 'required',
+        'DHdanSH' => 'required',
+    ]);
+
+    try {
+        $sp = sp_baru::findOrFail($id);
+
+        if ($sp->status_doc == 'Rejected') {
+            $sp->status_doc = 'Pending';
+            $sp->DHdanSHApprove = 'waiting';
+        }
+
+        // 1. Update Data Dasar
+        $sp->no_dokumen = $request->no_dokumen;
+        $sp->judul = $request->judul;
+        $sp->jenis_doc = $request->jenis_doc;
+        $sp->tujuan = $request->tujuan;
+        $sp->ruang_lingkup = $request->ruang_lingkup;
+        $sp->referensi = $request->referensi;
+        $sp->definisi = $request->definisi;
+        
+        // PASTIKAN INI TERISI (Data dari Hidden Input hasil gabungan JS)
+        $sp->aktifitas_tanggung_jawab = $request->aktifitas_tanggung_jawab;
+        
+        $sp->DHdanSH = $request->DHdanSH;
+        
+        // 2. Perbaikan Logika People (Simpan sebagai JSON)
+        if ($request->has('people')) {
+            $sp->people = json_encode(array_values(array_filter($request->people)));
+        }
+
+        // 3. Perbaikan Logika Lampiran
+        $lampiranData = [];
+        if ($request->has('lampiran_judul')) {
+            // Ambil lampiran lama yang sudah ada di DB sebagai dasar
+            $existingLampiran = json_decode($sp->lampiran, true) ?? [];
+
+            foreach ($request->lampiran_judul as $key => $judul) {
+                $filePath = null;
+
+                // Cek apakah ada upload file baru untuk baris ini
+                if ($request->hasFile("lampiran_file.$key")) {
+                    $file = $request->file("lampiran_file")[$key];
+                    $filePath = $file->store('lampiran_sp', 'public');
+                } 
+                // Jika tidak upload baru, cari file lama dari data sebelumnya (menggunakan index)
+                elseif (isset($existingLampiran[$key]['file'])) {
+                    $filePath = $existingLampiran[$key]['file'];
+                }
+
+                $lampiranData[] = [
+                    'judul' => $judul,
+                    'text'  => $request->lampiran_text[$key] ?? '',
+                    'file'  => $filePath
+                ];
+            }
+            $sp->lampiran = json_encode($lampiranData);
+        }
+
+        $sp->save();
+
+        // 4. Regenerate PDF
+        if ($sp->file && Storage::exists('public/sp_pending/' . $sp->file)) {
+            Storage::delete('public/sp_pending/' . $sp->file);
+        }
+        $this->generateSP_PDF($sp);
+
+        return redirect()->route('dataSpBaru.index')->with('success', 'Dokumen berhasil direvisi.');
+
+    } catch (\Exception $e) {
+        return back()->with('error', 'Gagal: ' . $e->getMessage());
+    }
+}
+    
     /**
      * Fungsi API untuk mengambil data Approver dan Semua User
      * Masukkan route ini di api.php atau web.php: 
@@ -94,7 +193,7 @@ class tb_sp_baru extends Controller
         }
 
         $nextNumber = $maxNumber + 1;
-        $autoNumber = $prefix . str_pad($nextNumber, 2, '0', STR_PAD_LEFT);
+        $autoNumber = $prefix . str_pad($nextNumber, 2, '00', STR_PAD_LEFT);
 
         return view('admin.Menus.DokumenBaru.SP.create-spBaru', compact('autoNumber'));
     }
@@ -199,7 +298,7 @@ class tb_sp_baru extends Controller
                     'definisi'                 => $doc->definisi,  
                     'aktifitas_tanggung_jawab' => $doc->aktifitas_tanggung_jawab,
                     'lampiran'                 => $doc->lampiran, 
-                    'edisi'                    => '0',
+                    'edisi'                    => '1',
                     'revisi'                   => '0',
                     'efektif_date'             => $doc->efektif_date ?? now(),
                     'catatan'                   => null,

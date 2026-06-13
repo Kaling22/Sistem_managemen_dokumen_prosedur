@@ -128,9 +128,9 @@
         fetch('/api/get-approvers')
             .then(response => response.json())
             .then(data => {
-                data.all_users.forEach(user => {
+                data.jsa_reviewers.forEach(user => {
                     if(user.nama !== "{{ $jsa->direview_oleh }}") {
-                        selectReviewer.add(new Option(`${user.nama} (${user.nrp})`, user.nama));
+                        selectReviewer.add(new Option(`${user.nama} (${user.nrp}) - ${user.departemen}`, user.nama));
                     }
                 });
                 data.dhsh.forEach(user => {

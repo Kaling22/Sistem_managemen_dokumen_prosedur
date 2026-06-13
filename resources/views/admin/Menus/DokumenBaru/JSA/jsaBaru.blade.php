@@ -34,7 +34,10 @@
             <td>{{ $item->departemen }}</td>
             <td>
                 @if($item->file)
-                    <a href="{{ asset('storage/jsa_pending/'.$item->file) }}" target="_blank">
+                    @php
+                        $jsaFolder = in_array($item->status_doc, ['Active', 'Inactive']) ? 'jsa' : 'jsa_pending';
+                    @endphp
+                    <a href="{{ asset('storage/'.$jsaFolder.'/'.$item->file) }}" target="_blank">
                         Lihat PDF
                     </a>
                 @else
@@ -103,6 +106,11 @@
                         <i class="bx bx-edit-alt"></i> Perbaiki
                     </a>
                 @endif
+                @if($item->status_doc == 'Active')
+                    <a href="{{ route('dataJsaBaru.revisi', $item->id) }}" class="btn btn-sm btn-info">
+                        <i class="bx bx-revision"></i> Ajukan Revisi
+                    </a>
+                @endif
                 <form onsubmit="return confirm('Apakah Anda Yakin ?');"
                     action="{{ route('dataJsaBaru.destroy', $item->id) }}" method="POST">
                     @csrf
@@ -149,7 +157,7 @@
 {{-- MODAL APPROVAL DH/SH --}}
 <div class="modal fade" id="modalApproveDH" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
-        <form action="{{ route('dokumen.approve.dhsh') }}" method="POST">
+        <form action="{{ route('jsa.approve.dhsh') }}" method="POST">
             @csrf
             <input type="hidden" name="id" id="doc_id">
             <div class="modal-content">

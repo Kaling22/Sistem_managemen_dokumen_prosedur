@@ -57,7 +57,7 @@
             <td>{{$item->revisi}}</td>
             <td>{{$item->efektif_date}}</td>
             <td>
-            @if(Auth::user()->role==0)
+            @if(Auth::user()->role==0||Auth::user()->role==1)
             <a href="javascript:void(0)" 
               onclick="handleRevision('{{ $item->no_dokumen }}', '{{ route('dataIkFalog.edit', $item->id) }}')" 
               class="btn btn-sm btn-warning">
@@ -69,8 +69,6 @@
                 @method('DELETE')
                 <button type="submit" class="btn btn-sm btn-danger">Hapus</button>
             </form>
-            @elseif(Auth::user()->role==1)
-                No Access.
             @else
                 Jenis Akun Tidak Memiliki Akses.
             @endif

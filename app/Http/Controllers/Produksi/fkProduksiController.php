@@ -4,7 +4,7 @@ namespace App\Http\Controllers\PRODUKSI;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\PRODUKSI\tb_fk_produksi;
+use App\Models\Produksi\tb_fk_produksi;
 use Illuminate\Support\Facades\Storage;
 class fkProduksiController extends Controller
 {
@@ -16,7 +16,7 @@ class fkProduksiController extends Controller
     public function index()
     {
         $fk = tb_fk_produksi::all();
-        return view ('admin.Menus.DataPRODUKSI.FORMULIR KERJA.data-fk',compact('fk'));
+        return view ('admin.Menus.DataProduksi.FORMULIR KERJA.data-fk',compact('fk'));
     }
 
     /**
@@ -26,7 +26,7 @@ class fkProduksiController extends Controller
      */
     public function create()
     {
-        return view ('admin.Menus.DataPRODUKSI.FORMULIR KERJA.create-fk');
+        return view ('admin.Menus.DataProduksi.FORMULIR KERJA.create-fk');
     }
 
     /**
@@ -77,7 +77,7 @@ class fkProduksiController extends Controller
     public function edit($id)
     {
         $fk = tb_fk_produksi::find($id);
-        return view('admin.Menus.DataPRODUKSI.FORMULIR KERJA.edit-fk',compact('fk'));
+        return view('admin.Menus.DataProduksi.FORMULIR KERJA.edit-fk',compact('fk'));
     }
 
     /**

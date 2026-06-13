@@ -73,7 +73,13 @@ Route::middleware(['auth'])->group(function () {
             // TAMBAHKAN INI: Ambil SEMUA untuk Pembuat Tambahan (Role 0 sampai 6)
             'all_users' => User::whereIn('role', [0, 1, 5, 6])
                             ->orderBy('nama', 'asc')
-                            ->get(['nama', 'nrp', 'role'])
+                            ->get(['nama', 'nrp', 'role']),
+
+            // Reviewer khusus JSA: hanya dari departemen SHE & Plant
+            'jsa_reviewers' => User::whereIn('role', [0, 1, 5, 6])
+                            ->whereIn('departemen', ['SHE', 'Plant'])
+                            ->orderBy('nama', 'asc')
+                            ->get(['nama', 'nrp', 'role', 'departemen'])
         ]);
     });
     //SP
@@ -90,6 +96,14 @@ Route::middleware(['auth'])->group(function () {
         ->name('dataJsaBaru.review');
     Route::put('/dataJsaBaru/{id}/review/update', [App\Http\Controllers\DokumenBaru\tb_jsa_baru::class, 'updateReview'])
         ->name('dataJsaBaru.updateReview');
+    // Approval final DH/SH (disetujui_oleh)
+    Route::post('/dokumen/approve-jsa', [App\Http\Controllers\DokumenBaru\tb_jsa_baru::class, 'approveDHSH'])
+        ->name('jsa.approve.dhsh');
+    // Revisi JSA (reuse jsa_barus)
+    Route::get('/dataJsaBaru/{id}/revisi', [App\Http\Controllers\DokumenBaru\tb_jsa_baru::class, 'revisi'])
+        ->name('dataJsaBaru.revisi');
+    Route::post('/dataJsaBaru/{id}/revisi', [App\Http\Controllers\DokumenBaru\tb_jsa_baru::class, 'storeRevisi'])
+        ->name('dataJsaBaru.storeRevisi');
 
     
     //dokumen revisi SOP
@@ -132,7 +146,7 @@ Route::middleware(['auth'])->group(function () {
     //ik Inactive
     Route::get('/dataIkProduksi/inactive', [App\Http\Controllers\Produksi\ikProduksiController::class, 'indexInactive'])->name('dataIkProduksi.inactive');
     Route::resource('dataIkProduksi', App\Http\Controllers\Produksi\ikProduksiController::class);
-    Route::resource('dataJsaProduksi', App\Http\Controllers\Produksi\jsaProduksiController::class);
+    Route::resource('dataJsaProduksi', App\Http\Controllers\Produksi\jsaController::class);
     Route::resource('dataPxProduksi', App\Http\Controllers\Produksi\pxProduksiController::class);
     Route::resource('dataFkProduksi', App\Http\Controllers\Produksi\fkProduksiController::class);
     Route::resource('dataLinkProduksi', App\Http\Controllers\Produksi\linkproduksiController::class);
@@ -140,17 +154,17 @@ Route::middleware(['auth'])->group(function () {
 // });
 
 // Route::middleware(['auth', 'department:SHE'])->group(function () {
-    Route::get('/dataSopShe/inactive', [App\Http\Controllers\She\sopSheController::class, 'indexInactive'])->name('dataSopShe.inactive');
-    Route::resource('dataSopShe', App\Http\Controllers\She\sopSheController::class);
+    Route::get('/dataSopShe/inactive', [App\Http\Controllers\SHE\sopSheController::class, 'indexInactive'])->name('dataSopShe.inactive');
+    Route::resource('dataSopShe', App\Http\Controllers\SHE\sopSheController::class);
     //sop Inactive
-    Route::get('/dataSpShe/inactive', [App\Http\Controllers\She\spSheController::class, 'indexInactive'])->name('dataSpShe.inactive');
-    Route::resource('dataSpShe', App\Http\Controllers\She\spSheController::class);
+    Route::get('/dataSpShe/inactive', [App\Http\Controllers\SHE\spSheController::class, 'indexInactive'])->name('dataSpShe.inactive');
+    Route::resource('dataSpShe', App\Http\Controllers\SHE\spSheController::class);
     //ik Inactive
-    Route::get('/dataIkShe/inactive', [App\Http\Controllers\She\ikSheController::class, 'indexInactive'])->name('dataIkShe.inactive');
-    Route::resource('dataIkShe', App\Http\Controllers\She\ikSheController::class);
-    Route::resource('dataJsaShe', App\Http\Controllers\She\jsaSheController::class);
-    Route::resource('dataPxShe', App\Http\Controllers\She\pxSheController::class);
-    Route::resource('dataFkShe', App\Http\Controllers\She\fkSheController::class);
+    Route::get('/dataIkShe/inactive', [App\Http\Controllers\SHE\ikSheController::class, 'indexInactive'])->name('dataIkShe.inactive');
+    Route::resource('dataIkShe', App\Http\Controllers\SHE\ikSheController::class);
+    Route::resource('dataJsaShe', App\Http\Controllers\SHE\jsaSheController::class);
+    Route::resource('dataPxShe', App\Http\Controllers\SHE\pxSheController::class);
+    Route::resource('dataFkShe', App\Http\Controllers\SHE\fkSheController::class);
 // });
 
 // Route::middleware(['auth', 'department:ICTMD'])->group(function () {

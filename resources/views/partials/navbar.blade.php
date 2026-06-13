@@ -14,8 +14,46 @@ id="layout-navbar"
     <!-- /Search -->
 
     <ul class="navbar-nav flex-row align-items-center ms-auto">
-    <!-- Place this tag where you want the button to render. -->
-    
+
+    <!-- Notifikasi Approval -->
+    <li class="nav-item dropdown me-3 me-xl-2">
+        <a class="nav-link dropdown-toggle hide-arrow position-relative" href="javascript:void(0);" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="bx bx-sm bx-bell"></i>
+            @if(($notifTotal ?? 0) > 0)
+                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: .65rem;">
+                    {{ $notifTotal > 99 ? '99+' : $notifTotal }}
+                    <span class="visually-hidden">dokumen menunggu</span>
+                </span>
+            @endif
+        </a>
+        <ul class="dropdown-menu dropdown-menu-end py-0" style="min-width: 320px;">
+            <li class="dropdown-menu-header border-bottom">
+                <div class="dropdown-header d-flex align-items-center py-3">
+                    <h6 class="mb-0 me-auto">Notifikasi</h6>
+                    @if(($notifTotal ?? 0) > 0)
+                        <span class="badge bg-label-primary">{{ $notifTotal }} Baru</span>
+                    @endif
+                </div>
+            </li>
+            @forelse(($notifItems ?? []) as $n)
+                <li>
+                    <a class="dropdown-item d-flex align-items-center" href="{{ $n['url'] }}">
+                        <i class="bx {{ $n['icon'] }} bx-sm me-2 text-warning"></i>
+                        <span class="flex-grow-1">{{ $n['label'] }}</span>
+                        <span class="badge bg-danger rounded-pill ms-2">{{ $n['count'] }}</span>
+                    </a>
+                </li>
+            @empty
+                <li>
+                    <span class="dropdown-item text-muted py-3">
+                        <i class="bx bx-check-circle me-1"></i> Tidak ada dokumen menunggu persetujuan.
+                    </span>
+                </li>
+            @endforelse
+        </ul>
+    </li>
+    <!--/ Notifikasi -->
+
     <li class="nav-item me-2 me-xl-0">
         <a class="nav-link style-switcher-toggle" href="javascript:void(0);" id="darkModeToggle">
             <i class="bx bx-sm bx-moon" id="darkModeIcon"></i>
@@ -70,34 +108,23 @@ id="layout-navbar"
 <div class="container-xxl flex-grow-1 container-p-y">
 
 <script>
-    const darkModeToggle = document.getElementById('darkModeToggle');
-    const darkModeIcon = document.getElementById('darkModeIcon');
-    const htmlElement = document.documentElement; // Mengambil tag <html>
+    (function () {
+        const darkModeToggle = document.getElementById('darkModeToggle');
+        const darkModeIcon = document.getElementById('darkModeIcon');
+        const htmlElement = document.documentElement; // Tag <html>
 
-    // 1. Cek local storage saat halaman dimuat
-    const currentTheme = localStorage.getItem('theme') ? localStorage.getItem('theme') : null;
-
-    if (currentTheme) {
-        htmlElement.setAttribute('data-theme', currentTheme);
-        if (currentTheme === 'dark') {
-            darkModeIcon.classList.replace('bx-moon', 'bx-sun');
+        // Sinkronkan ikon dengan tema yang sedang aktif (kelas sudah dipasang lebih awal di <head>).
+        function syncIcon() {
+            const isDark = htmlElement.classList.contains('dark-mode');
+            darkModeIcon.classList.toggle('bx-sun', isDark);
+            darkModeIcon.classList.toggle('bx-moon', !isDark);
         }
-    }
+        syncIcon();
 
-    // 2. Fungsi saat tombol diklik
-    darkModeToggle.addEventListener('click', function() {
-        let theme = htmlElement.getAttribute('data-theme');
-        
-        if (theme === 'dark') {
-            // Ubah ke Light Mode
-            htmlElement.setAttribute('data-theme', 'light');
-            darkModeIcon.classList.replace('bx-sun', 'bx-moon');
-            localStorage.setItem('theme', 'light');
-        } else {
-            // Ubah ke Dark Mode
-            htmlElement.setAttribute('data-theme', 'dark');
-            darkModeIcon.classList.replace('bx-moon', 'bx-sun');
-            localStorage.setItem('theme', 'dark');
-        }
-    });
+        darkModeToggle.addEventListener('click', function () {
+            const isDark = htmlElement.classList.toggle('dark-mode');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            syncIcon();
+        });
+    })();
 </script>

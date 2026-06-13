@@ -89,7 +89,7 @@ class tb_ik_baru extends Controller
         }
 
         $nextNumber = $maxNumber + 1;
-        $autoNumber = $prefix . str_pad($nextNumber, 2, '0', STR_PAD_LEFT);
+        $autoNumber = $prefix . str_pad($nextNumber, 2, '00', STR_PAD_LEFT);
 
         return view('admin.Menus.DokumenBaru.IK.create-ikBaru', compact('autoNumber'));
     }
@@ -172,7 +172,7 @@ class tb_ik_baru extends Controller
                     'dhsh_date'                => $doc->dhsh_date,
                     'status_doc'               => 'Active',
                     'aktifitas_tanggung_jawab' => $doc->aktifitas_tanggung_jawab,
-                    'edisi'                    => '0',
+                    'edisi'                    => '1',
                     'revisi'                   => '0',
                     'efektif_date'             => $doc->efektif_date ?? now(),
                     'catatan'                   => null,

@@ -13,6 +13,94 @@ use Illuminate\Support\Facades\DB;
 
 class tb_sop_baru extends Controller
 {
+
+    /**
+     * Menampilkan halaman edit/revisi
+     */
+    public function edit($id)
+    {
+        $sop = sop_baru::findOrFail($id);
+        
+        // Proteksi: Hanya pembuat atau admin yang bisa edit
+        if (Auth::user()->nama != $sop->pembuat && !in_array(Auth::user()->role, [0, 1])) {
+            return redirect()->route('dataSopBaru.index')->with('error', 'Anda tidak memiliki hak akses untuk mengedit dokumen ini.');
+        }
+
+        return view('admin.Menus.DokumenBaru.SOP.edit-sopBaru', compact('sop'));
+    }
+
+    /**
+     * Memproses update revisi
+     */
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'no_dokumen' => 'required',
+            'judul' => 'required',
+            'jenis_doc' => 'required',
+            'DHdanSH' => 'required',
+            'PJO' => 'required',
+        ]);
+
+        try {
+            $sop = sop_baru::findOrFail($id);
+
+            // Jika status sebelumnya Rejected, kita reset ke status awal agar diajukan kembali
+            if ($sop->status_doc == 'Rejected') {
+                $sop->status_doc = 'Pending'; // Kembali ke antrian approval
+                $sop->DHdanSHApprove = 'waiting'; // Reset status verifikasi DH
+                $sop->PJOApprove = 'waiting'; // Reset status approval PJO
+            }
+
+            // Update Data Dasar
+            $sop->no_dokumen = $request->no_dokumen;
+            $sop->judul = $request->judul;
+            $sop->jenis_doc = $request->jenis_doc;
+            $sop->tujuan = $request->tujuan;
+            $sop->ruang_lingkup = $request->ruang_lingkup;
+            $sop->referensi = $request->referensi;
+            $sop->definisi = $request->definisi;
+            $sop->aktifitas_tanggung_jawab = $request->aktifitas_tanggung_jawab;
+            $sop->DHdanSH = $request->DHdanSH;
+            $sop->PJO = $request->PJO;
+
+            // Update Lampiran jika ada perubahan
+            if ($request->has('lampiran_judul')) {
+                $lampiranData = [];
+                foreach ($request->lampiran_judul as $key => $judul) {
+                    $filePath = $request->old_lampiran_file[$key] ?? null;
+                    
+                    if ($request->hasFile("lampiran_file.$key")) {
+                        // Hapus file lampiran lama jika diganti
+                        if ($filePath) { Storage::disk('public')->delete($filePath); }
+                        $file = $request->file("lampiran_file")[$key];
+                        $filePath = $file->store('lampiran_sop', 'public');
+                    }
+                    
+                    $lampiranData[] = [
+                        'judul' => $judul,
+                        'text'  => $request->lampiran_text[$key] ?? '',
+                        'file'  => $filePath
+                    ];
+                }
+                $sop->lampiran = json_encode($lampiranData);
+            }
+
+            $sop->save();
+
+            // Hapus PDF lama dan Generate PDF baru dengan data revisi
+            if ($sop->file && Storage::exists('public/sop_pending/' . $sop->file)) {
+                Storage::delete('public/sop_pending/' . $sop->file);
+            }
+            $this->generateSOP_PDF($sop);
+
+            return redirect()->route('dataSopBaru.index')->with('success', 'Dokumen berhasil direvisi dan diajukan kembali.');
+
+        } catch (\Exception $e) {
+            return back()->with('error', 'Gagal memperbarui dokumen: ' . $e->getMessage());
+        }
+    }
+    
     /**
      * Fungsi API untuk mengambil data Approver dan Semua User
      * Masukkan route ini di api.php atau web.php: 
@@ -110,7 +198,7 @@ class tb_sop_baru extends Controller
         }
 
         $nextNumber = $maxNumber + 1;
-        $autoNumber = $prefix . str_pad($nextNumber, 2, '0', STR_PAD_LEFT);
+        $autoNumber = $prefix . str_pad($nextNumber, 2, '00', STR_PAD_LEFT);
 
         return view('admin.Menus.DokumenBaru.SOP.create-sopBaru', compact('autoNumber'));
     }

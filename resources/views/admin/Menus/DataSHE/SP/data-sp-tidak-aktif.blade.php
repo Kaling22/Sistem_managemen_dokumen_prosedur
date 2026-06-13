@@ -4,7 +4,7 @@
 
 <div class="card">
   <div class="card-header d-flex justify-content-between align-items-center">
-    <h5 class="card-header">Tabel Data SP TIDAK AKTIF PLANT</h5>
+    <h5 class="card-header">Tabel Data SP TIDAK AKTIF SHE</h5>
   </div>
   <div class="table-responsive text-nowrap">
     <table class="table">
@@ -40,16 +40,14 @@
             <td>{{$item->revisi}}</td>
             <td>{{ $item->efektif_date ? date('d/m/Y', strtotime($item->efektif_date)) : '-' }}</td>
             <td>
-            @if(Auth::user()->role==0)
-            <!-- <a href="{{ route('dataSpPlant.edit', $item->id) }}"class="btn btn-sm btn-secondary">Revisi</a> -->
+            @if(Auth::user()->role==0||Auth::user()->role==1)
+            <!-- <a href="{{ route('dataSpShe.edit', $item->id) }}"class="btn btn-sm btn-secondary">Revisi</a> -->
             <form onsubmit="return confirm('Apakah Anda Yakin ?');"
-                action="{{ route('dataSpPlant.destroy', $item->id) }}" method="POST">
+                action="{{ route('dataSpShe.destroy', $item->id) }}" method="POST">
                 @csrf
                 @method('DELETE')
                 <button type="submit" class="btn btn-sm btn-danger">Hapus</button>
             </form>
-            @elseif(Auth::user()->role==1)
-                No Access.
             @else
                 Jenis Akun Tidak Memiliki Akses.
             @endif

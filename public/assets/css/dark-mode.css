@@ -1,0 +1,192 @@
+/* =====================================================================
+   Custom Dark Mode for Sneat (free) template.
+   Aktif saat <html> memiliki class .dark-mode (di-toggle dari navbar).
+   Template gratisan tidak menyertakan CSS dark bawaan, jadi override
+   warna dilakukan manual di sini.
+   ===================================================================== */
+
+:root {
+    --dm-bg: #25293c;        /* background utama  */
+    --dm-surface: #2f3349;   /* card / navbar / sidebar */
+    --dm-surface-2: #2b2f45; /* input / bg-light */
+    --dm-border: rgba(255, 255, 255, 0.10);
+    --dm-text: #d3d6ee;
+    --dm-text-strong: #ffffff;
+    --dm-muted: #8a8fb3;
+}
+
+/* ---------- Base ---------- */
+html.dark-mode,
+html.dark-mode body {
+    background-color: var(--dm-bg) !important;
+    color: var(--dm-text) !important;
+}
+
+html.dark-mode .bg-body,
+html.dark-mode .layout-wrapper,
+html.dark-mode .layout-page,
+html.dark-mode .content-wrapper {
+    background-color: var(--dm-bg) !important;
+}
+
+/* ---------- Surfaces: card, navbar, sidebar, dropdown, modal ---------- */
+html.dark-mode .card,
+html.dark-mode .navbar-detached,
+html.dark-mode .bg-navbar-theme,
+html.dark-mode .menu,
+html.dark-mode .bg-menu-theme,
+html.dark-mode .dropdown-menu,
+html.dark-mode .modal-content,
+html.dark-mode .offcanvas {
+    background-color: var(--dm-surface) !important;
+    color: var(--dm-text) !important;
+    border-color: var(--dm-border) !important;
+    box-shadow: none !important;
+}
+
+html.dark-mode .card-header,
+html.dark-mode .card-footer,
+html.dark-mode .modal-header,
+html.dark-mode .modal-footer {
+    background-color: var(--dm-surface) !important;
+    border-color: var(--dm-border) !important;
+    color: var(--dm-text-strong) !important;
+}
+
+/* ---------- Typography ---------- */
+html.dark-mode h1, html.dark-mode h2, html.dark-mode h3,
+html.dark-mode h4, html.dark-mode h5, html.dark-mode h6,
+html.dark-mode .card-title,
+html.dark-mode .modal-title,
+html.dark-mode label,
+html.dark-mode .form-label,
+html.dark-mode p,
+html.dark-mode strong,
+html.dark-mode .fw-bold,
+html.dark-mode .fw-semibold {
+    color: var(--dm-text) !important;
+}
+
+html.dark-mode .text-muted,
+html.dark-mode .text-secondary,
+html.dark-mode small.text-muted {
+    color: var(--dm-muted) !important;
+}
+
+html.dark-mode .text-dark,
+html.dark-mode .text-black {
+    color: var(--dm-text) !important;
+}
+
+/* ---------- Tables ---------- */
+html.dark-mode .table {
+    color: var(--dm-text) !important;
+}
+html.dark-mode .table > :not(caption) > * > * {
+    background-color: transparent !important;
+    border-color: var(--dm-border) !important;
+    color: var(--dm-text) !important;
+}
+html.dark-mode .table thead th {
+    color: var(--dm-text-strong) !important;
+}
+html.dark-mode .table-hover > tbody > tr:hover > * {
+    background-color: rgba(255, 255, 255, 0.04) !important;
+}
+
+/* ---------- Forms ---------- */
+html.dark-mode .form-control,
+html.dark-mode .form-select,
+html.dark-mode textarea,
+html.dark-mode .input-group-text {
+    background-color: var(--dm-surface-2) !important;
+    color: var(--dm-text) !important;
+    border-color: var(--dm-border) !important;
+}
+html.dark-mode .form-control::placeholder,
+html.dark-mode textarea::placeholder {
+    color: #6f739a !important;
+}
+html.dark-mode input[readonly],
+html.dark-mode .form-control[readonly] {
+    background-color: #20233300 !important;
+    opacity: 0.75;
+}
+
+/* ---------- Utility backgrounds & borders ---------- */
+html.dark-mode .bg-light,
+html.dark-mode .bg-white,
+html.dark-mode .bg-lighter {
+    background-color: var(--dm-surface-2) !important;
+    color: var(--dm-text) !important;
+}
+html.dark-mode .border,
+html.dark-mode .border-top,
+html.dark-mode .border-bottom,
+html.dark-mode .border-start,
+html.dark-mode .border-end,
+html.dark-mode .dropdown-divider,
+html.dark-mode hr {
+    border-color: var(--dm-border) !important;
+}
+
+/* ---------- Sidebar menu ---------- */
+html.dark-mode .menu-link,
+html.dark-mode .menu-horizontal-wrapper .menu-link {
+    color: #b6bad6 !important;
+}
+html.dark-mode .menu-link:hover,
+html.dark-mode .menu-sub > .menu-item > .menu-link:hover {
+    background-color: rgba(255, 255, 255, 0.05) !important;
+    color: var(--dm-text-strong) !important;
+}
+html.dark-mode .menu-item.active > .menu-link:not(.menu-toggle) {
+    color: var(--dm-text-strong) !important;
+    background: rgba(105, 108, 255, 0.18) !important;
+}
+html.dark-mode .menu-header-text,
+html.dark-mode .menu-icon {
+    color: #7f84a8 !important;
+}
+html.dark-mode .menu-inner > .menu-item.active::before {
+    background-color: #696cff !important;
+}
+
+/* ---------- Navbar ---------- */
+html.dark-mode .navbar .nav-link,
+html.dark-mode .navbar i,
+html.dark-mode .navbar .navbar-nav .nav-link i {
+    color: var(--dm-text) !important;
+}
+
+/* ---------- Dropdown items ---------- */
+html.dark-mode .dropdown-item {
+    color: var(--dm-text) !important;
+}
+html.dark-mode .dropdown-item:hover,
+html.dark-mode .dropdown-item:focus {
+    background-color: rgba(255, 255, 255, 0.06) !important;
+    color: var(--dm-text-strong) !important;
+}
+
+/* ---------- Footer ---------- */
+html.dark-mode .content-footer,
+html.dark-mode .footer-container,
+html.dark-mode .footer {
+    background-color: transparent !important;
+    color: var(--dm-muted) !important;
+}
+
+/* ---------- Misc ---------- */
+html.dark-mode .accordion-button,
+html.dark-mode .list-group-item,
+html.dark-mode .nav-tabs .nav-link {
+    background-color: var(--dm-surface) !important;
+    color: var(--dm-text) !important;
+    border-color: var(--dm-border) !important;
+}
+html.dark-mode .page-link {
+    background-color: var(--dm-surface) !important;
+    color: var(--dm-text) !important;
+    border-color: var(--dm-border) !important;
+}

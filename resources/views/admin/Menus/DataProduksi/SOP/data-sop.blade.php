@@ -70,8 +70,7 @@
                 @method('DELETE')
                 <button type="submit" class="btn btn-sm btn-danger">Hapus</button>
             </form>
-            @elseif(Auth::user()->role==1)
-                No Access.
+        
             @else
                 Jenis Akun Tidak Memiliki Akses.
             @endif

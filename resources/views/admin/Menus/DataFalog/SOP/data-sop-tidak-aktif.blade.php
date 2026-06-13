@@ -40,7 +40,7 @@
             <td>{{$item->revisi}}</td>
             <td>{{ $item->efektif_date ? date('d/m/Y', strtotime($item->efektif_date)) : '-' }}</td>
             <td>
-            @if(Auth::user()->role==0)
+            @if(Auth::user()->role==0||Auth::user()->role==1)
             <!-- <a href="{{ route('dataSopFalog.edit', $item->id) }}"class="btn btn-sm btn-secondary">Revisi</a> -->
             <form onsubmit="return confirm('Apakah Anda Yakin ?');"
                 action="{{ route('dataSopFalog.destroy', $item->id) }}" method="POST">
@@ -48,8 +48,7 @@
                 @method('DELETE')
                 <button type="submit" class="btn btn-sm btn-danger">Hapus</button>
             </form>
-            @elseif(Auth::user()->role==1)
-                No Access.
+
             @else
                 Jenis Akun Tidak Memiliki Akses.
             @endif

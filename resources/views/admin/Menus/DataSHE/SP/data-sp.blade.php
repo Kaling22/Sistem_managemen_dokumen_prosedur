@@ -4,9 +4,9 @@
 
 <div class="card">
   <div class="card-header d-flex justify-content-between align-items-center">
-    <h5 class="card-header">Tabel Data SP PLANT</h5>
+    <h5 class="card-header">Tabel Data SP SHE</h5>
     @if(Auth::user()->role == 0 || Auth::user()->role == 1)
-    <a href="{{route('dataSpPlant.inactive')}}" type="button" class="btn btn-primary" >
+    <a href="{{route('dataSpShe.inactive')}}" type="button" class="btn btn-primary" >
             Dokumen Tidak Aktif
         </a>
     <a href="{{route('export.induk.sp')}}" type="button" class="btn btn-primary" >
@@ -50,7 +50,7 @@
             <td>{{$item->revisi}}</td>
             <td>{{ $item->efektif_date ? date('d/m/Y', strtotime($item->efektif_date)) : '-' }}</td>
             <td>
-            @if(Auth::user()->role==0)
+            @if(Auth::user()->role==0||Auth::user()->role==1)
             <a href="javascript:void(0)" 
               onclick="handleRevision('{{ $item->no_dokumen }}', '{{ route('dataSpFalog.edit', $item->id) }}')" 
               class="btn btn-sm btn-warning">
@@ -63,8 +63,6 @@
                 @method('DELETE')
                 <button type="submit" class="btn btn-sm btn-danger">Hapus</button>
             </form>
-            @elseif(Auth::user()->role==1)
-                No Access.
             @else
                 Jenis Akun Tidak Memiliki Akses.
             @endif

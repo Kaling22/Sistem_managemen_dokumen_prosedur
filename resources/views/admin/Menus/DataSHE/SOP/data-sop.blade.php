@@ -4,9 +4,9 @@
 
 <div class="card">
   <div class="card-header d-flex justify-content-between align-items-center">
-    <h5 class="card-header">Tabel Data SOP PLANT</h5>
+    <h5 class="card-header">Tabel Data SOP SHE</h5>
     @if(Auth::user()->role == 0 || Auth::user()->role == 1)
-    <a href="{{route('dataSopPlan.inactive')}}" type="button" class="btn btn-primary" >
+    <a href="{{route('dataSopShe.inactive')}}" type="button" class="btn btn-primary" >
             Dokumen Tidak Aktif
         </a>
     <a href="{{route('export.induk.sop')}}" type="button" class="btn btn-primary" >
@@ -52,19 +52,17 @@
             <td>
             @if(Auth::user()->role==0 || Auth::user()->role==1)
             <a href="javascript:void(0)" 
-              onclick="handleRevision('{{ $item->no_dokumen }}', '{{ route('dataSopPlant.edit', $item->id) }}')" 
+              onclick="handleRevision('{{ $item->no_dokumen }}', '{{ route('dataSopShe.edit', $item->id) }}')" 
               class="btn btn-sm btn-warning">
               Revisi
             </a>
-            <!-- <a href="{{ route('dataSopPlant.edit', $item->id) }}"class="btn btn-sm btn-secondary">Revisi</a> -->
+            <!-- <a href="{{ route('dataSopShe.edit', $item->id) }}"class="btn btn-sm btn-secondary">Revisi</a> -->
             <form onsubmit="return confirm('Apakah Anda Yakin ?');"
-                action="{{ route('dataSopPlant.destroy', $item->id) }}" method="POST">
+                action="{{ route('dataSopShe.destroy', $item->id) }}" method="POST">
                 @csrf
                 @method('DELETE')
                 <button type="submit" class="btn btn-sm btn-danger">Hapus</button>
             </form>
-            @elseif(Auth::user()->role==1)
-                No Access.
             @else
                 Jenis Akun Tidak Memiliki Akses.
             @endif

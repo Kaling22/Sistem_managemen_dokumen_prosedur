@@ -4,9 +4,9 @@
 
 <div class="card">
   <div class="card-header d-flex justify-content-between align-items-center">
-    <h5 class="card-header">Tabel Data IK PLANT</h5>
+    <h5 class="card-header">Tabel Data IK SHE</h5>
     @if(Auth::user()->role==0)
-    <a href="{{route('dataIkPlant.inactive')}}" type="button" class="btn btn-primary" >
+    <a href="{{route('dataIkShe.inactive')}}" type="button" class="btn btn-primary" >
             Dokumen Tidak Aktif
         </a>  
     <a href="{{route('export.induk.ik')}}" type="button" class="btn btn-primary" >
@@ -50,20 +50,18 @@
             <td>{{$item->revisi}}</td>
             <td>{{$item->efektif_date}}</td>
             <td>
-            @if(Auth::user()->role==0)
+            @if(Auth::user()->role==0||Auth::user()->role==1)
             <a href="javascript:void(0)" 
-              onclick="handleRevision('{{ $item->no_dokumen }}', '{{ route('dataIkPlant.edit', $item->id) }}')" 
+              onclick="handleRevision('{{ $item->no_dokumen }}', '{{ route('dataIkShe.edit', $item->id) }}')" 
               class="btn btn-sm btn-warning">
               Revisi
             </a>
             <form onsubmit="return confirm('Apakah Anda Yakin ?');"
-                action="{{ route('dataIkPlant.destroy', $item->id) }}" method="POST">
+                action="{{ route('dataIkShe.destroy', $item->id) }}" method="POST">
                 @csrf
                 @method('DELETE')
                 <button type="submit" class="btn btn-sm btn-danger">Hapus</button>
             </form>
-            @elseif(Auth::user()->role==1)
-                No Access.
             @else
                 Jenis Akun Tidak Memiliki Akses.
             @endif

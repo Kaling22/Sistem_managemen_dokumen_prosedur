@@ -5,14 +5,6 @@
 <div class="card">
   <div class="card-header d-flex justify-content-between align-items-center">
     <h5 class="card-header">Tabel Data JSA ENGINEERING</h5>
-    @if(Auth::user()->role==0)
-      <a href="{{route('dataJsaEngineering.create')}}" type="button" class="btn btn-primary" >
-      Tambah JSA Baru
-    </a>
-    @elseif(Auth::user()->role==1)
-    @else
-      Jenis Akun Tidak Memiliki Akses.
-    @endif
   </div>
   <div class="table-responsive text-nowrap">
     <table class="table">
@@ -49,17 +41,14 @@
             <td>{{$item->tanggal_efektif}}</td>
             <td>
             @if(Auth::user()->role==0)
-            <a href="{{ route('dataJsaEngineering.edit', $item->id) }}"class="btn btn-sm btn-secondary">Edit</a>
             <form onsubmit="return confirm('Apakah Anda Yakin ?');"
                 action="{{ route('dataJsaEngineering.destroy', $item->id) }}" method="POST">
                 @csrf
                 @method('DELETE')
                 <button type="submit" class="btn btn-sm btn-danger">Hapus</button>
             </form>
-            @elseif(Auth::user()->role==1)
-                No Access.
             @else
-                Jenis Akun Tidak Memiliki Akses.
+                <span class="text-muted">-</span>
             @endif
           </td>
         </tr>

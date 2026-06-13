@@ -50,11 +50,11 @@
             
             {{-- Kolom Approval DH/SH --}}
             <td>
-              @if($item->status == 'Rejected' && $item->DHdanSHApprove == 'rejected')
+              @if($item->status_doc == 'Rejected' && $item->DHdanSHApprove == 'rejected')
                   <span class="badge bg-danger">Rejected</span>
               @elseif($item->DHdanSHApprove == 'approved')
                   <span class="badge bg-success">Approved</span>
-              @elseif(in_array(Auth::user()->role, [3,4]) && Auth::user()->nama == $item->DHdanSH && $item->status != 'Rejected')
+              @elseif(in_array(Auth::user()->role, [3,4]) && Auth::user()->nama == $item->DHdanSH && $item->status_doc != 'Rejected')
                   <button type="button" onclick="openApprovalModal({{ $item->id }})" class="btn btn-warning btn-sm">
                       Need to Approve
                   </button>

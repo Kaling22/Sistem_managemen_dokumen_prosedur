@@ -126,6 +126,11 @@
             {{-- Kolom Action --}}
             <td>
               <div class="d-flex gap-1">
+                @if($item->status_doc == 'Rejected' && (Auth::user()->nama == $item->pembuat || in_array(Auth::user()->role, [0,1])))
+                    <a href="{{ route('dataSopBaru.edit', $item->id) }}" class="btn btn-sm btn-warning">
+                        <i class="bx bx-edit"></i> Revisi
+                    </a>
+                @endif
                 @if(in_array(Auth::user()->role, [0,1]))
                 <form onsubmit="return confirm('Apakah Anda Yakin ?');"
                     action="{{ route('dataSopBaru.destroy', $item->id) }}" method="POST">

@@ -13,26 +13,6 @@ use Illuminate\Support\Facades\DB;
 class tb_sop_revisi extends Controller
 {
 
-    public function checkPendingRevision($no_dokumen)
-    {
-        // Cari apakah ada no_dokumen yang sama di tabel revisi
-        // Kita cek status yang bukan 'Active' (karena Active berarti sudah selesai/pindah ke master)
-        $pending = sop_revisi::where('no_dokumen', $no_dokumen)->first();
-
-        if ($pending) {
-            return response()->json([
-                'status' => 'exists',
-                'message' => 'Revisi baru tidak bisa diajukan karena dokumen ini sedang dalam proses approval.',
-                'detail' => [
-                    'status_saat_ini' => $pending->status_doc,
-                    'oleh' => $pending->pembuat
-                ]
-            ]);
-        }
-
-        return response()->json(['status' => 'available']);
-    }
-
     public function index()
     {
         $sopRevisi = sop_revisi::all();

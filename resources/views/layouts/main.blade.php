@@ -37,6 +37,15 @@
     <link rel="stylesheet" href="../../assets/vendor/css/theme-default.css" class="template-customizer-theme-css" />
     <link rel="stylesheet" href="../../assets/css/demo.css" />
 
+    <!-- Custom Dark Mode -->
+    <link rel="stylesheet" href="{{ asset('assets/css/dark-mode.css') }}" />
+    <script>
+        // Terapkan tema sedini mungkin agar tidak ada kedipan (flash) saat load.
+        if (localStorage.getItem('theme') === 'dark') {
+            document.documentElement.classList.add('dark-mode');
+        }
+    </script>
+
     <!-- Vendors CSS -->
     <link rel="stylesheet" href="../../assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css" />
 
